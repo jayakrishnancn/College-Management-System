@@ -1,0 +1,106 @@
+
+=shadow
+	box-shadow: 2px 2px 5px #e0e0e0
+
+
+/* login page */
+body
+	background: #fff
+.login
+	max-width: 300px
+	margin: 5% auto  0 auto
+	text-align: center
+	a
+		color: #aaa
+	.login-content
+		background: #fff
+		margin: 30px auto  0 auto
+		text-align: left
+		border-radius: 3px
+		border: 1px solid #ccc
+		padding:  10px 20px 20px 20px
+	.btn
+		width:  100%
+	.login-sub
+		border-radius: 3px
+		background: inherit
+		border: 1px solid #ccc
+		font-size: 0.9em
+		padding: 20px
+		margin: 20px 0
+		color: #666
+		a
+			color: #3366ff
+	.links
+		margin: 10px 
+
+.white-bg-bordered
+	border: 1px solid #ccc
+	background: #fff
+
+// @import '_bootstrap-navbar.sass'
+@media screen and (min-width: 750px)
+	nav 
+		.navbar-nav>li>ul.dropdown-menu
+			margin-top: 3px !important
+			border-radius: 3px
+			&:after,&:before
+				right: 10px
+				position: absolute
+				display: inline-block  
+				border: 7px solid transparent
+				content: ''
+			&:after
+				top: -13px 
+				border-bottom-color: #fff
+			&:before
+				top: -15px 
+				border-bottom-color: #ccc
+			&.left:after,&.left:before
+				left: 10px
+				right:  auto
+			&.mid:after,&.mid:before
+				left: 40%
+				right:  auto
+
+.container
+	max-width: 980px
+h3
+	margin: 0
+.main-contents > hr
+	margin:  15px 0 
+.side-nav 
+	color: #0366d6
+	.heading.list-group-item 
+		background: #f3f5f8
+		color: #666
+		font-weight: bold
+		border-bottom: 1px solid #e1e4e8
+	.list-group-item
+		padding: 8px 10px
+		color: #0366d6
+		&:hover
+			color: inherit
+			background: #f6f8fa 
+	&.active
+		background: inherit
+		color: #333
+		border-color: #e0e0e0
+		font-weight: bold
+		border-left: 3px solid #e36209
+	&:last-child,&:first-child
+		border-radius: 3px
+.btn
+	font-weight: bold
+	border-radius: 3px 
+	&.btn-long
+		padding: 6px 20px
+	&.btn-default
+		background: #eff3f6
+		color: #333
+
+/* helpers */
+.width80per
+	width: 80%
+
+@import '_notbar.sass'

@@ -21,18 +21,17 @@ defined('BASEPATH') OR exit('No direct script access allowed');
     <!-- Collect the nav links, forms, and other content for toggling -->
     <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
       <ul class="nav navbar-nav">
+      <li><a href="<?=base_url('admin/manageusers')?>">Manage Users</a></li> 
         <li class="dropdown">
-          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Manage User <span class="caret"></span></a>
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Panels<span class="caret"></span></a>
           <ul class="dropdown-menu left">
-            <li><a href="<?=base_url('admin/manageusers')?>">View users</a></li>
-            <li><a href="<?=base_url('admin/adduser')?>">Add user</a></li>
-            <li><a href="#">Edit user</a></li>
-            <li><a href="#">Delete user</a></li>
-            <li role="separator" class="divider"></li>
-            <li><a href="<?=base_url('admin/addedituserpermissions')?>">Add permission</a></li>
-            <li><a href="<?=base_url('admin/addedituserpermissions')?>">Delete permission</a></li> 
-            <li role="separator" class="divider"></li>
-            <li><a href="#">Reset password</a></li>
+             <?php 
+           foreach ($userpermission as $key => $value) {
+            ?>
+            <li><a href="<?=base_url($value)?>" style="text-transform: capitalize;"><?=$value?> Panel</a></li>
+            <?php 
+            }
+            ?>
           </ul>
         </li> 
        

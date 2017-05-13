@@ -11,6 +11,12 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 		<link rel="icon" href="/favicon.ico" type="image/x-icon">
 		<link rel="stylesheet" href="<?=base_url()?>assets/vendor/bootstrap.min.css">
 		<link rel="stylesheet" href="<?=base_url()?>assets/css/style.css">
+		<style>
+			span.highlight{
+				background-color: yellow;
+
+			}
+		</style>
 	</head>
 	<body>
 		<?php 
@@ -47,6 +53,32 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 		for (var i = 0, l = elems.length; i < l; i++) {
 		elems[i].addEventListener('click', confirmIt, false);
 		}
-	</script>
+	</script><script>
+
+	function addHighlighting(element, textToHighlight){
+    var text = element.text().toLowerCase().trim();
+    var highlightedText = '<span class="highlight">' + textToHighlight + '</span>';
+    var newText = text.replace(textToHighlight, highlightedText);
+
+    element.html(newText);
+}
+$(document).ready(function() { 
+
+	$("#searchtable").keyup(function () {
+	   var value = this.value.toLowerCase().trim();
+	   $("table.tabletosearch tr").each(function (index) {
+	       if (!index) return;
+	       $(this).find("td").not( ".noindex" ).each(function () {
+	           var id = $(this).text().toLowerCase().trim();
+	           
+	           var not_found = (id.indexOf(value) == -1);
+	           $(this).closest('tr').toggle(!not_found);
+	           addHighlighting($(this), value);
+	           return not_found;
+	       });
+	   });
+	});
+});
+</script>
 	</body>
 </html>

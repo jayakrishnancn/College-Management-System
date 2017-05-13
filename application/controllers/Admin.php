@@ -18,7 +18,8 @@ class Admin extends CI_Controller {
         }
         $info['page'] = $page;
         $info['data']['setup'] = $this->publicModel->setupData();
-        $info['data']['sessionData'] = $this->sessionData;
+        $info['data']['sessionData'] = $this->sessionData; 
+        $info['userpermission']=$this->adminModel->getusergroup($this->sessionData['uid']);
         $this->load->view('admin/bootstrap', $info);
     }
     function __construct() {
@@ -104,9 +105,10 @@ class Admin extends CI_Controller {
                 'uid' => $input['uid'],
                 'permissionid' => $input['permissionid'],
                 'deletekey' => $input['deletekey']
-            );
+            ); 
             if ($this->adminModel->addUserPermission($userdata)) {
-                redirect('admin/adddeleteuserpermissions?msg=User permission added / deleted', 'refresh');
+                $process=($input['deletekey']=='true')?"deleted":"added";
+                redirect('admin/adddeleteuserpermissions?msg=User permission '.$process, 'refresh');
                 
                 return;
             }
@@ -116,7 +118,12 @@ class Admin extends CI_Controller {
         }
         $this->load->helper('form');
         $this->load->library('FormBuilder');
-        $this->formbuilder->startform(['action' => 'admin/adddeleteuserpermissions', 'heading' => 'Add / Delete User Permission']);
+        $heading='Add User Permission';
+        if($this->input->get('delete')=='true')
+        {
+            $heading='Delete User Permission';
+        }
+        $this->formbuilder->startform(['action' => 'admin/adddeleteuserpermissions', 'heading' => $heading]);
         $this->formbuilder->addlabel('Username');
         $this->formbuilder->startdropdown('uid');
         
@@ -131,16 +138,19 @@ class Admin extends CI_Controller {
             $this->formbuilder->dropdownoption($value['groupname'], $value['permissionid']);
         }
         $this->formbuilder->enddropdown();
-        $this->formbuilder->addlabel('Delete Permission ?');
-        $this->formbuilder->startdropdown('deletekey');
-        $this->formbuilder->dropdownoption('No', 'false');
+
+
+
+
         if ($this->input->get('delete') == 'true') {
-            $this->formbuilder->dropdownoption('Yes', 'true', true);
+        $this->formbuilder->addinput('deletekey', 'hidden', false,'true');
+        $this->formbuilder->setbutton('Delete permission');
+
         } else {
-            $this->formbuilder->dropdownoption('Yes', 'true');
+       $this->formbuilder->addinput('deletekey', 'hidden', false,'false');
+        $this->formbuilder->setbutton('Add permission');
         }
-        $this->formbuilder->enddropdown();
-        $this->formbuilder->setbutton('Add / Delete permission');
+
         $this->renderadmin('form_builder');
     }
     public function manageusers() { 

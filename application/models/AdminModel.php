@@ -77,7 +77,13 @@ class AdminModel extends CI_Model {
 				return $query->result_array()[0];
 		return false;
 	}
-	public function getUserWithAccess($uid=NULL)
+	public function getusergroup($uid)
+	{
+			$array=$this->db->query('SELECT groupname FROM permission WHERE permissionid IN ( SELECT permissionid from userpermission WHERE userpermission.uid = ' .  $uid.  ' )')->result_array();
+			return array_column($array,'groupname');
+			
+	}
+	public function getUserWithAccess($uid=NULL,$comaseperated=true)
 	{
 		if($uid==NULL)
 		{
@@ -99,9 +105,17 @@ class AdminModel extends CI_Model {
 		$result = $query->result_array();
 		foreach ($result as $key => &$value) {
 			$x=$this->db->query('SELECT groupname FROM permission WHERE permissionid IN ( SELECT permissionid from userpermission WHERE userpermission.uid = ' .  $value['uid'] .  ' )')->result_array();
-
+			if($comaseperated===true)
+			{
 			$value['access']= implode(",", array_column($x,'groupname')) ;
+				
+			}
+			else{
+				$value['access']=array_column($x,'groupname');
+			}
 		}
+		if($query->num_rows()==1)
+			return $result[0];
 		return $result;
 	}
 	public function addUserPermission($data)

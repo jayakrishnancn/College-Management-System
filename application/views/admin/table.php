@@ -24,7 +24,7 @@
 				<td  class="noindex"> 
 					<a class="btn btn-default btn-sm confirmation" href="'  .base_url('admin/resetpassword')  .  '?email=' . $value['email'] . '">Reset password</a>
 					<a class="btn btn-default btn-sm " href="'  .base_url('admin/edituser')  .  '?email=' . $value['email'] . '">Edit </a>
-					<a class="btn btn-default btn-sm confirmation"  href="'  .base_url('admin/deleteuser')  .  '?emailid=' . $value['email'] . '">Delete </a>
+					<a class="btn btn-default btn-sm confirmation"  href="'  .base_url('admin/deleteuser')  .  '?email=' . $value['email'] . '">Delete </a>
 				</td>
 		</tr>
 			';

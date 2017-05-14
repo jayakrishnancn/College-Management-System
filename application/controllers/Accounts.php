@@ -127,7 +127,7 @@ class Accounts extends CI_Controller {
 			//store to temporary variable to pass to model
 			$input = $this->input->post();
 			
-			$login_details = array('username'=>$input['username'], 'password'=>$input['username']);
+			$login_details = array('username'=>$input['username'], 'password'=>$input['password']);
 
 			// if account_model .login return array it means user verified 
 			// if not redirect to login page to re-enter details 

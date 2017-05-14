@@ -28,6 +28,7 @@ class Accounts_model extends CI_Model {
 		if ($q->num_rows() == 1) {
 			$salt = $q->result_array() [0]['salt'];
 			$hashedPassword = $this->hashPassword($data['password'], $salt) [0];
+   
 			$q2 = $this->db->get_where($this->tables['login'], ['email' => $data['username'], 'password' => $hashedPassword]);
 			if ($q2->num_rows() == 1) {
 				$this->load->library('user_agent');
@@ -75,7 +76,7 @@ class Accounts_model extends CI_Model {
 	public function verify_user($where) 
 	{
 		$verifyUserQuery = $this->db->get_where($this->tables['login'], $where);
-  
+
 		if ($verifyUserQuery->num_rows() === 1) 
 		{
 			

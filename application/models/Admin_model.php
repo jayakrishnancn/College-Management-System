@@ -67,7 +67,7 @@ class Admin_model extends CI_Model {
 
 		 return $this->db->trans_status(); 
 	}
-	public function getUser($where=NULL)
+	public function get_user($where=NULL)
 	{
 		if($where==NULL){
 			return $this->db->get_where($this->tables['login'])->result_array();
@@ -83,7 +83,14 @@ class Admin_model extends CI_Model {
 			return array_column($array,'groupname');
 			
 	}
-	public function get_user_with_access($uid=NULL,$comaseperated=true)
+	/**
+	 * get user with access 
+	 * @param  int  $uid           user id
+	 * @param  boolean $coma_seperated if true return a sting with comaseperated list 
+	 *                                	of  access group name
+	 * @return [type]                 [description]
+	 */
+	public function get_user_with_access($uid=NULL,$coma_seperated=true)
 	{
 		if($uid==NULL)
 		{
@@ -105,10 +112,9 @@ class Admin_model extends CI_Model {
 		$result = $query->result_array();
 		foreach ($result as $key => &$value) {
 			$x=$this->db->query('SELECT groupname FROM permission WHERE permissionid IN ( SELECT permissionid from userpermission WHERE userpermission.uid = ' .  $value['uid'] .  ' )')->result_array();
-			if($comaseperated===true)
+			if($coma_seperated===true)
 			{
-			$value['access']= implode(",", array_column($x,'groupname')) ;
-				
+				$value['access']= implode(",", array_column($x,'groupname')) ;
 			}
 			else{
 				$value['access']=array_column($x,'groupname');
@@ -125,23 +131,30 @@ class Admin_model extends CI_Model {
 		 'uid'=>$data['uid'], 'permissionid'=>$data['permissionid']   
 		 ] );
 		 
-		if(isset($data['deletekey']) && $data['deletekey'] =='true' )
-		{
-			if($result->num_rows()<=0)
-			{
-				return false;
-			}
-			return $this->db->delete($this->tables['userpermission'], [
-				 'uid'=>$data['uid'], 'permissionid'=>$data['permissionid']   
-				 ]);
-			return false;
-		}
-
+		// there should nt be any rows
 		if($result->num_rows()>0)
 			return false;
+		
 		return $this->db->insert($this->tables['userpermission'], [
 		 'uid'=>$data['uid'], 'permissionid'=>$data['permissionid']   
 		 ] );
+	}
+	public function delete_user_permission($data)
+	{ 
+
+		$result=$this->db->get_where($this->tables['userpermission'], [
+		 'uid'=>$data['uid'], 'permissionid'=>$data['permissionid']   
+		 ] );
+
+		// there should be only 1 row with same user and permission
+		if($result->num_rows() != 1)
+		{
+			return false;
+		}
+
+		return $this->db->delete($this->tables['userpermission'], [
+			 'uid'=>$data['uid'], 'permissionid'=>$data['permissionid']   
+			 ]); 
 	}
 	public function resetpassword($email)
 	{

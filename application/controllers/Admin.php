@@ -13,8 +13,16 @@ defined('BASEPATH') OR exit('No direct script access allowed');
  * @link  https://github.com/jayakrishnancn/College-Management-System
  */
  class Admin extends CI_Controller {
- 
+ 	/**
+ 	 * Session data in array so that redudent function call can be reduced
+ 	 * @var array
+ 	 */
 	private $session_data = [];
+
+	/**
+	 * min username length load from common function library
+	 * @var integer
+	 */
 	private $_min_username_length=4;	
 	private $_min_password_length=6;	
 
@@ -131,11 +139,11 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 	 */
 	public function adduser() 
 	{
-		if ($input = $this->input->post('username')) 
+		if ($input = $this->input->post()) 
 		{
 			$this->load->library('form_validation');
 
-			$this->form_validation->set_rules('username', 'Username', 'trim|required|min_length[' . $this->_min_username_length. ']|is_unique[' . $this->tables['login'] . '.email]');
+			$this->form_validation->set_rules('username', 'Username', 'trim|required|min_length[' . $this->_min_username_length. ']');
 			$this->form_validation->set_rules('password', 'Password', 'trim|required|min_length[' .  $this->_min_password_length . ']');
 			$this->form_validation->set_rules('permissionid', 'permissions', 'trim|required|greater_than_equal_to[0]|numeric|is_natural');
 			
@@ -151,6 +159,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 				'permissionid' => $input['permissionid']
 			);
 
+			// return true if insertion successful  
 			if ($this->admin_model->add_user($userdata)) 
 			{
 				redirect('admin/adduser?msg=User added');
@@ -160,23 +169,25 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 			redirect('admin/adduser?msg=Couldn\'t add User. Try again');
 			return;
 		}
+ 
+		$this->load->library('form_builder');
 
-		$this->load->helper('form');
-		$this->load->library('FormBuilder');
-
-		$this->formbuilder->startform(['action' => 'admin/adduser', 'heading' => 'Add User']);
-		$this->formbuilder->addlabel('Username');
-		$this->formbuilder->addinput(['name' => 'username', 'placeholder' => "Username", 'autofocus' => true]);
-		$this->formbuilder->addlabel('Password');
-		$this->formbuilder->addinput(['name' => 'password', 'placeholder' => "Password", 'type' => 'password']);
-		$this->formbuilder->addlabel('Permission');
-		$this->formbuilder->startdropdown('permissionid');
+		$this->form_builder->startform(['action' => 'admin/adduser', 'heading' => 'Add User']);
 		
+		$this->form_builder->addlabel('Username');
+		$this->form_builder->addinput(['name' => 'username', 'placeholder' => "Username", 'autofocus' => true]);
+
+		$this->form_builder->addlabel('Password');
+		$this->form_builder->addinput(['name' => 'password', 'placeholder' => "Password", 'type' => 'password']);
+
+		$this->form_builder->addlabel('Permission');
+		$this->form_builder->startdropdown('permissionid'); 
 		foreach ($this->admin_model->get_permissions() as $key => $value) {
-			$this->formbuilder->dropdownoption($value['groupname'], $value['permissionid']);
+			$this->form_builder->dropdownoption($value['groupname'], $value['permissionid']);
 		}
-		$this->formbuilder->enddropdown();
-		$this->formbuilder->setbutton('Add user');
+		$this->form_builder->enddropdown();
+
+		$this->form_builder->setbutton('Add user');
 
 		$this->render_admin_view('form_builder');
 	}
@@ -189,38 +200,53 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 	 */
 	public function adddeleteuserpermissions() 
 	{
-		if ($input = $this->input->post('permissionid')) 
+		// store post data to an array
+		if ($input = $this->input->post()) 
 		{
 			$this->load->library('form_validation');
 		
 			$this->form_validation->set_rules('uid', 'user id', 'required');
-			$this->form_validation->set_rules('permissionid', 'permissions', 'trim|required|greater_than_equal_to[0]|numeric|is_natural');
-			$this->form_validation->set_rules('deletekey', 'deletekey', '');
-		
+			$this->form_validation->set_rules('permissionid', 'permissions', 'trim|required|greater_than_equal_to[0]|numeric|is_natural'); 
+			
 			if ($this->form_validation->run() == FALSE) 
 			{
 				redirect('admin/adddeleteuserpermissions?msg=Check all fields');
 				return;
 			}
 
+			if(!isset($input['deletekey']))
+				$input['deletekey']='';
+
 			$userdata = array(
 				'uid' => $input['uid'],
-				'permissionid' => $input['permissionid'],
-				'deletekey' => $input['deletekey']
+				'permissionid' => $input['permissionid']
 			); 
 
-			if ($this->admin_model->add_user_permission($userdata)) 
+			if(isset($input['deletekey']) && $input['deletekey'] =='true' )
 			{
-				$process=($input['deletekey']=='true')?"deleted":"added";
-				redirect('admin/adddeleteuserpermissions?msg=User permission '.$process, 'refresh');
-				return;
+					if($this->admin_model->delete_user_permission($userdata))
+					{
+						redirect('admin/adddeleteuserpermissions?msg=User permission deleted');
+						return;
+					}
+					else{
+						
+						redirect('admin/adddeleteuserpermissions?msg=can\'t delete User permission.Try again');
+						return;
+					}
 			}
-			redirect('admin/adddeleteuserpermissions?msg=Couldn\'t add permission. Likely to be Already done before ', 'refresh');
-			return;
-		}
+			else{
+				if ($this->admin_model->add_user_permission($userdata)){
 
-		$this->load->helper('form');
-		$this->load->library('FormBuilder');
+					redirect('admin/adddeleteuserpermissions?msg=User permission added');
+					return;
+				}
+ 				redirect('admin/adddeleteuserpermissions?msg=Cant\'t add permission. Likely to be Already done before ');
+				return ;			
+			} 
+		}
+ 
+		$this->load->library('form_builder');
 
 		$heading='Add User Permission';
 		if($this->input->get('delete') == 'true')
@@ -228,33 +254,33 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 			$heading='Delete User Permission';
 		}
 
-		$this->formbuilder->startform(['action' => 'admin/adddeleteuserpermissions', 'heading' => $heading]);
-		$this->formbuilder->addlabel('Username');
-		$this->formbuilder->startdropdown('uid');
+		$this->form_builder->startform(['action' => 'admin/adddeleteuserpermissions', 'heading' => $heading]);
+		$this->form_builder->addlabel('Username');
+		$this->form_builder->startdropdown('uid');
 		
-		foreach ($this->admin_model->getUser() as $key => $value) 
+		foreach ($this->admin_model->get_user() as $key => $value) 
 		{
-			$this->formbuilder->dropdownoption($value['email'], $value['uid']);
+			$this->form_builder->dropdownoption($value['email'], $value['uid']);
 		}
-		$this->formbuilder->enddropdown();
-		$this->formbuilder->addlabel('Permission');
-		$this->formbuilder->startdropdown('permissionid');
+		$this->form_builder->enddropdown();
+		$this->form_builder->addlabel('Permission');
+		$this->form_builder->startdropdown('permissionid');
 		
 		foreach ($this->admin_model->get_permissions() as $key => $value) 
 		{
-			$this->formbuilder->dropdownoption($value['groupname'], $value['permissionid']);
+			$this->form_builder->dropdownoption($value['groupname'], $value['permissionid']);
 		}
-		$this->formbuilder->enddropdown();
+		$this->form_builder->enddropdown();
   
 		if ($this->input->get('delete') == 'true') 
 		{
-			$this->formbuilder->addinput('deletekey', 'hidden', false,'true');
-			$this->formbuilder->setbutton('Delete permission');
+			$this->form_builder->addinput('deletekey', 'hidden', false,'true');
+			$this->form_builder->setbutton('Delete permission');
 		} 
 		else 
 		{
-		   $this->formbuilder->addinput('deletekey', 'hidden', false,'false');
-			$this->formbuilder->setbutton('Add permission');
+		   $this->form_builder->addinput('deletekey', 'hidden', false,'false');
+			$this->form_builder->setbutton('Add permission');
 		}
 
 		$this->render_admin_view('form_builder');
@@ -272,8 +298,11 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 		$this->render_admin_view('table', $data);
 	}
 
+	// --------------------------------------------------------------------
+	
 	/**
 	 * User History
+	 * 
 	 * @return void
 	 */
 	public function history() 
@@ -282,80 +311,123 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 		$this->render_admin_view('public/history', $data,false);
 	}
 
+	// --------------------------------------------------------------------
+	
+	/**
+	 * reset password by admin
+	 *
+	 * accepts email (unique key of login table)
+	 * @return void
+	 */
 	public function resetpassword() 
 	{
-		if (($email = $this->input->get('email')) == false || ($this->input->get('email') == NULL)) {
-			redirect('admin/manageusers?msg=Couldn\'t reset password.Empty Fields', 'refresh');
+		if (($email = $this->input->get('email')) == false || ($this->input->get('email') == NULL)) 
+		{
+			redirect('admin/manageusers?msg=Couldn\'t reset password.Empty Fields');
 			
 			return;
 		}
-		if ($this->admin_model->resetpassword($email)) {
-			redirect('admin/manageusers?msg=Password Reset to email id ', 'refresh');
+
+		if ($this->admin_model->resetpassword($email)) 
+		{
+			redirect('admin/manageusers?msg=Password Reset to email id ');
 			
 			return;
 		}
-		redirect('admin/manageusers?msg=Couldn\'t reset password', 'refresh');
+		redirect('admin/manageusers?msg=Couldn\'t reset password');
 	}
-	public function deleteuser() {
-		$this->load->helper(array(
-			'form',
-			'url'
-		));
+ 
+	// --------------------------------------------------------------------
+	
+	/**
+	 * deleteuser by admin
+	 * 
+	 * @return void
+	 */
+	public function deleteuser() 
+	{	
 		$this->load->library('form_validation');
-		if ($this->input->get('emailid')) {
+
+		if ($email=$this->input->get('email')) 
+		{
+
 			$this->form_validation->set_data($_GET);
-			$this->form_validation->set_rules('emailid', 'emailid', 'required');
-			if ($this->form_validation->run() == FALSE) {
-				redirect('admin/manageusers?msg=username not valid', 'refresh');
-				
+			$this->form_validation->set_rules('email', 'Email-id', 'required|min_length[3]');
+
+			if ($this->form_validation->run() == FALSE) 
+			{
+				redirect('admin/manageusers?msg=username not valid'); 
 				return;
 			}
-			$email = $this->input->get('emailid');
-			if ($this->admin_model->deleteuser($email)) {
-				redirect('admin/manageusers?msg=user  account ( ' . $email . ' ) deleted', 'refresh');
-				
+ 
+			if ($this->admin_model->deleteuser($email)) 
+			{
+				redirect('admin/manageusers?msg=user  account ( ' . $email . ' ) deleted'); 
 				return;
 			}
-			redirect('admin/manageusers?msg=Cant delete user.Try again', 'refresh');
-			
+
+			redirect('admin/manageusers?msg=Cant delete user.Try again'); 
 			return;
 		}
-		redirect('admin/manageusers?msg=username required', 'refresh');
-		
+
+		redirect('admin/manageusers?msg=username required'); 
 		return;
 	}
-	public function edituser() {
-		$this->load->library(['FormBuilder', 'form_validation']);
-		if ($email = $this->input->post('email')) {
+
+	// --------------------------------------------------------------------
+	/**
+	 * Edit user details 
+	 * 
+	 * Edit details of user by admin
+	 * inputs oldemail of user (unique key in login table) and new inputs
+	 * @return void
+	 */
+	public function edituser() 
+	{
+
+		$this->load->library(['form_builder', 'form_validation']);
+
+		if ($email = $this->input->post('email')) 
+		{
 			$oldemail = $this->input->post('oldemail');
 			$this->form_validation->set_rules('oldemail', 'oldemail', 'required|min_length[4]');
 			$this->form_validation->set_rules('email', 'email', 'required|min_length[4]');
-			if ($this->form_validation->run() == FALSE) {
-				redirect('admin/edituser?msg=username not valid', 'refresh');
-				
+
+			if ($this->form_validation->run() == FALSE) 
+			{
+				redirect('admin/manageusers?msg=username not valid'); 
 				return;
 			}
+
+			// parameter are 'values' and 'where' inquery 
 			if ($this->admin_model->updateuserdetails(['email' => $email], ['email' => $oldemail])) {
-				redirect('admin/edituser?msg=user details updated', 'refresh');
+				redirect('admin/manageusers?msg=user details updated');
 				
 				return;
 			}
-			redirect('admin/edituser?msg=can\'t  update user details', 'refresh');
-			
-			return;
-		} elseif ($email = $this->input->get('email')) {
-			$userdata = $this->admin_model->getUser(['email' => $email]);
-			$this->formbuilder->startform(['action' => 'admin/edituser', 'heading' => 'Change User Details (' . $email . ') ']);
-			$this->formbuilder->addlabel('E-mail id');
-			$this->formbuilder->addinput('email', 'text', true, $userdata['email']);
-			$this->formbuilder->addinput('oldemail', 'hidden', true, $userdata['email']);
-			$this->formbuilder->setbutton('Change');
-			$this->renderadmin('form_builder');
+			redirect('admin/manageusers?msg=can\'t  update user details');
 			
 			return;
 		}
-		redirect('admin/manageusers?msg=user not found', 'refresh');
+		 elseif ($email = $this->input->get('email')) 
+		 {
+		 	// if get then show the form to fill the changes
+			$userdata = $this->admin_model->get_user(['email' => $email]);
+
+			$this->form_builder->startform(['action' => 'admin/edituser', 'heading' => 'Change User Details (' . $email . ') ']);
+
+			$this->form_builder->addlabel('E-mail id');
+			$this->form_builder->addinput('email', 'text', true, $userdata['email']);
+
+			$this->form_builder->addinput('oldemail', 'hidden', true, $userdata['email']);
+			$this->form_builder->setbutton('Change Details');
+			$this->render_admin_view('form_builder');
+			
+			return;
+		}
+		redirect('admin/manageusers?msg=user not found');
 		
 		return;
 	}
+	
 }

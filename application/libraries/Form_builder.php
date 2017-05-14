@@ -1,7 +1,7 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class FormBuilder{
+class Form_builder{
 
 	public $error = NULL;
 	public $form = array();

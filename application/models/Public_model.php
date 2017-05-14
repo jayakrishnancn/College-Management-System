@@ -1,7 +1,7 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class PublicModel extends CI_Model {
+class Public_model extends CI_Model {
 
 	private $tables = array(
 			'login' => 'login',
@@ -16,7 +16,6 @@ class PublicModel extends CI_Model {
 	
 		parent::__construct();
 		$this->load->database();
-	
 	}
 
 
@@ -53,15 +52,5 @@ class PublicModel extends CI_Model {
 
 		return false;
 	}
-
-
-	public function setupData($where=NULL)
-	{
-
-		if($where==NULL){
-			return $this->db->get($this->tables['setup'])->result_array()[0];
-		}
-			return $this->db->get_where($this->tables['setup'],$where)->result_array()[0];
-	}
-
+ 
 }

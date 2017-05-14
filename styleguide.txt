@@ -1,0 +1,92 @@
+<?php 
+/**
+ *  Style Guide 
+ *    Follows the same style guide as codeigniter.
+ *    File Naming :  Class files must be named in a Ucfirst-like manner,
+ *                          while any other file name (configurations, views, 
+ *                          generic scripts, etc.) should be in all lowercase.
+ *                          
+ *                          example : 
+ *                              Somelibrary.php
+ *                              Some_library.php
+ *                              applicationconfig.php
+ *                              application_config.php
+ *                          Furthermore, class file names should match the name 
+ *                          of the class itself. For example, if you have a  class 
+ *                          named Myclass, then its filename must be Myclass.php.
+ *    
+ *    Class and Method Naming : Class names should always start with an 
+ *                          uppercase letter. Multiple words should be separated 
+ *                          with an underscore, and not CamelCased.
+ *
+ *                          example :
+ *                              class Super_class{
+ *                                  ...
+ *                              }
+ *                          Class methods should be entirely lowercased and named 
+ *                          to clearly indicate their function, preferably including a verb. 
+ *                          Try to avoid overly long and verbose names. Multiple words should be separated 
+ *                          with an underscore.
+ *
+ *                          example :
+ *                              function get_file_properties()  
+ *                             ie. descriptive, underscore separator, and all lowercase letters
+ *    
+ *    Variable Names :  Similar to those used for class methods.Variables should contain only 
+ *                          lowercase letters, use underscore separators, and be reasonably named to 
+ *                          indicate their purpose and contents. Very short, non-word variables should 
+ *                          only be used as iterators in for() loops.
+ *                          
+ *                          example :
+ *                              for ($j = 0; $j < 10; $j++)
+ *                              $str
+ *                              $group_id
+ *
+ *    Commenting : DocBlock style comments preceding class, method, and property declarations 
+ *                          so they can be picked up by IDEs:
+ *                          example : 
+ *                              /**
+ *                               *
+ *                               * @package     Package Name
+ *                               * @subpackage  Subpackage
+ *                               * @category    Category
+ *                               * @author      Author Name
+ *                               * @link        http://example.com
+ *                               *\/
+ *                               class Super_class {
+ *                           
+ *                          Use single line comments within code, leaving a blank line between large 
+ *                          comment blocks and code.
+ *                              
+ *    Constants  :  Constants follow the same guidelines as do variables, except constants should 
+ *                          always be fully uppercase.    
+ *
+ * 
+ *    TRUE, FALSE, and NULL:  should always be fully uppercase.
+ *
+ *    
+ *    Code Indenting : Use Allman style indenting. With the exception of Class declarations, 
+ *                          braces are always placed on a line by themselves, and indented at the same level 
+ *                          as the control statement that “owns” them. 
+ *    
+ *    private Methods and variables:
+ *                          example : 
+ *                              private function _convert_text() 
+ *                          
+ *                          private functions should start with _ (underscore)
+ *    
+ *    Short Open Tags :  Always use full PHP opening tags, in case a server does not have 
+ *                          short_open_tag enabled.
+ *                          
+ *    One Statement Per Line:
+ *                          Never combine statements on one line.
+ *
+ *
+ * use 
+ * 
+ * 			// --------------------------------------------------------------------
+ * 			
+ * 			between two functions inside a class
+ *
+ * 
+ */

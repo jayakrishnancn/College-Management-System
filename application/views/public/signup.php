@@ -3,7 +3,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 ?>
 <div class="login">
 	<h2>Signup</h2>
-	<?=form_open($signupAction,["class"=>"login-content"])?>
+	<?=form_open($action,["class"=>"login-content"])?>
 		<div class="form-group">
 		</div>
 		<div class="form-group">
@@ -14,10 +14,10 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 			<label for="exampleInputPassword1">Password</label>
 			<input type="password" class="form-control" id="exampleInputPassword1"  name="password" placeholder="Password">
 		</div>
-		<button type="submit" class="btn btn-success">Submit</button>
+		<button type="submit" class="btn btn-danger text-capitalize" >Create account</button>
 	</form>
 	<div class="login-sub">
-		Already Registered ? <a href="<?=base_url()?>public_view/login">Login to  an account </a>
+		Already Registered ? <a href="<?=base_url()?>accounts/login">Login to  an account </a>
 	</div>
 	<div class="links">
 		<a href="#">Terms</a>

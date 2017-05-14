@@ -1,13 +1,13 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class AccountsModel extends CI_Model {
+class Accounts_model extends CI_Model {
     private $tables = array(
         'login' => 'login',
         'userpermission' => 'userpermission',
         'history' => 'history'
     );
-    public $userLoginDetails = NULL;
+
     function __construct() {
         parent::__construct();
         $this->load->database();
@@ -45,17 +45,13 @@ class AccountsModel extends CI_Model {
                         $this->db->query("delete from " . $this->tables['history']. " where uid = "  . $result2['uid'].  " ORDER BY dateandtime ASC LIMIT 1  " );
             
                 }
-
-
-
-                $this->userLoginDetails = array(
+ 
+                return array(
                     'uid' => $result2['uid'],
                     'email' => $result2['email'],
                     'cookieid' => $cookieid,
                     'ipAddress' =>$ip
                 );
-                
-                return true;
             } else {
                 
                 return false;

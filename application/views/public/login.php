@@ -3,7 +3,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 ?>
 <div class="login">
 	<h2>Login</h2>
-	<?=form_open($loginAction,["class"=>"login-content"])?>
+	<?=form_open($action,["class"=>"login-content"])?>
 		<div class="form-group">
 		</div>
 		<div class="form-group">
@@ -17,7 +17,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 		<button type="submit" class="btn btn-success">Submit</button>
 	</form>
 	<div class="login-sub">
-		New to usermanager ? <a href="<?=base_url()?>public_view/signup">Create an account </a>
+		New to usermanager ? <a href="<?=base_url()?>accounts/signup">Create an account </a>
 	</div>
 	<div class="links">
 		<a href="#">Terms</a>

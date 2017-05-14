@@ -1,7 +1,7 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class AdminModel extends CI_Model {
+class Admin_model extends CI_Model {
 
 	private $tables = array(
 			'login' => 'login',
@@ -36,13 +36,13 @@ class AdminModel extends CI_Model {
 	}
 
  
-	public function getPermissions()
+	public function get_permissions()
 	{
 
 		return $this->db->get($this->tables['permission'])->result_array();
 	}
 
-	public function addUser($input)
+	public function add_user($input)
 	{
 		if( ! isset($input['username'], $input['password'], $input['permissionid']))
 		{
@@ -77,13 +77,13 @@ class AdminModel extends CI_Model {
 				return $query->result_array()[0];
 		return false;
 	}
-	public function getusergroup($uid)
+	public function get_usergroup($uid)
 	{
 			$array=$this->db->query('SELECT groupname FROM permission WHERE permissionid IN ( SELECT permissionid from userpermission WHERE userpermission.uid = ' .  $uid.  ' )')->result_array();
 			return array_column($array,'groupname');
 			
 	}
-	public function getUserWithAccess($uid=NULL,$comaseperated=true)
+	public function get_user_with_access($uid=NULL,$comaseperated=true)
 	{
 		if($uid==NULL)
 		{
@@ -118,7 +118,7 @@ class AdminModel extends CI_Model {
 			return $result[0];
 		return $result;
 	}
-	public function addUserPermission($data)
+	public function add_user_permission($data)
 	{
 
 		$result=$this->db->get_where($this->tables['userpermission'], [

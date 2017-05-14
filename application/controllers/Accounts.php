@@ -12,12 +12,16 @@ defined('BASEPATH') OR exit('No direct script access allowed');
  * @category	Controller
  * @author	  jayakrishnancn
  * @link		https://github.com/jayakrishnancn/College-Management-System
- */
- 
+ */ 
 class Accounts extends CI_Controller {
 
+	/**
+	 * To ser minimum length of username and password
+	 * @var integer
+	 */
 	private $_min_username_length=4;	
 	private $_min_password_length=6;	
+
 	/**
 	 * Class constructor
 	 *
@@ -128,7 +132,7 @@ class Accounts extends CI_Controller {
 			// if account_model .login return array it means user verified 
 			// if not redirect to login page to re-enter details 
 			// returned array is saved as  session data contains data in talbe 
-			// 	login.uid, login.email (primarykey), cookieid (random string) and current ipAddress.
+			// 	login.uid, login.email (primarykey), cookie_id (random string) and current ipAddress.
 			if ($user_login_details = $this->accounts_model->login($login_details)) 
 			{ 
 				// session library already loaded. so dont have to load again
@@ -201,11 +205,9 @@ class Accounts extends CI_Controller {
 
 			$signup_details = array('username'=>$input['username'], 'password'=>$input['username']);
 
-			// if account_model .login return array it means user verified 
-			// if not redirect to login page to re-enter details 
-			// returned array is saved as  session data contains data in talbe 
-			// 	login.uid, login.email (primarykey), cookieid (random string) and current ipAddress
-			if ($this->accounts_model->signup($signup_details) === TRUE) 
+			// if account_model .signup return bool true if user created 
+			// if not redirect to signup page to re-enter details. 
+			if ($this->accounts_model->signup($signup_details)) 
 			{
 				redirect('accounts/login?msg=Account created login to continue');
 				return;
@@ -250,8 +252,8 @@ class Accounts extends CI_Controller {
 		$prev_msg = (($this->input->get('msg') == FALSE) ? FALSE : $this->input->get('msg'));
 
 		// append ' logout successful ' message  to previous message and redirect to login page 
-		$msg = ($prev_msg == FALSE) ? "msg=Logout successful" : "msg=" . $prevmsg . ", Logout successful";
-		redirect("accounts/login?" . $msg, "refresh");
+		$msg = ($prev_msg == FALSE) ? "msg=Logout successful" : "msg=" . $prevmsg . "  Logout successful";
+		redirect("accounts/login?" . $msg);
 	}
 	
 }

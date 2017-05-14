@@ -2,7 +2,7 @@
 defined('BASEPATH') OR exit('No direct script access allowed');
   
   if(isset($_GET['msg'])){
-    echo '<div id="snackbar" class="show">'  . $_GET['msg'] .  ' </div>';
+    echo '<div id="snackbar" class="show">'  . $this->input->get('msg') .  ' </div>';
   }
 
 ?><nav class="navbar navbar-inverse navbar-static-top"  >
@@ -38,7 +38,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
       </ul>
       
       <ul class="nav navbar-nav navbar-right">
-        <li class="active"><a href="#"><?=$sessionData['email']?></a></li> 
+        <li class="active"><a href="#"><?=$session_data['email']?></a></li> 
         <li><a href="<?=base_url()?>accounts/logout">Logout</a></li> 
       </ul>
     </div><!-- /.navbar-collapse -->

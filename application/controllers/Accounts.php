@@ -255,5 +255,7 @@ class Accounts extends CI_Controller {
 		$msg = ($prev_msg == FALSE) ? "msg=Logout successful" : "msg=" . $prev_msg . " ";
 		redirect("accounts/login?" . $msg);
 	}
-	
+
+
+	  
 }

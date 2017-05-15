@@ -290,6 +290,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 		$this->load->library('form_builder'); 
 
 		$this->form_builder->startform(['action' => 'admin/deleteuserpermission', 'heading' => 'Delete User Permission']);
+		$this->form_builder->addlabel('Username');
 
 		// dropdown starts
 		$this->form_builder->startdropdown('uid');
@@ -345,9 +346,25 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 	// --------------------------------------------------------------------
 	
 	/**
+	 * reset my password
+	 * 
+	 * @return void
+	 */
+	public function resetmypassword() 
+	{ 
+		$data['table'] =  $this->common_functions->resetmypassword();
+		$this->render_admin_view('public/history', $data,false);
+	}
+
+	// 
+	// --------------------------------------------------------------------
+	
+	/**
 	 * reset password by admin
 	 *
-	 * accepts email (unique key of login table)
+	 * accepts email (unique key of login table) as get 
+	 * accepts username and new password as post method and reset user password
+	 *  to new password. 
 	 * @return void
 	 */
 	public function resetpassword() 
@@ -384,7 +401,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 			}
 
 			$input=$this->input->post();
-
+			
+			// Also delete history to automatically logout from other deveices
 			if ($this->admin_model->reset_password($input['username'],$input['password'])) 
 			{
 				redirect('admin/manageusers?msg=Password has been changed for user '.$inputs['username']);
@@ -398,12 +416,15 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 		}
 		redirect('admin/manageusers?msg=Missing parameters. Try again.');
 	}
+
  
 	// --------------------------------------------------------------------
 	
 	/**
 	 * deleteuser by admin
-	 * 
+	 *
+	 * Inputs email (unique key in login table) to delete user.
+	 * It deletes record of user from every table 
 	 * @return void
 	 */
 	public function deleteuser() 
@@ -462,7 +483,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 			}
 
 			// parameter are 'values' and 'where' inquery 
-			if ($this->admin_model->updateuserdetails(['email' => $email], ['email' => $oldemail])) {
+			if ($this->admin_model->update_user_details(['email' => $email], ['email' => $oldemail])) {
 				redirect('admin/manageusers?msg=user details updated');
 				
 				return;

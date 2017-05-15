@@ -168,7 +168,7 @@ class common_functions {
 	}
 
 	// --------------------------------------------------------------------
-
+	
 	/**
 	 * Verify SUCI
 	 * 
@@ -189,5 +189,28 @@ class common_functions {
 		// if user and cookie verified continue 
 		$this->verify_user_and_cookie(NULL,$redirect_invalid);
 	}
+ 
+	// --------------------------------------------------------------------
+	
+	/**
+	 * Reset user password
+	 *
+	 * Used to reset password by user himself
+	 * @param  string $newpassword new password to change to
+	 * 
+	 * @return bool
+	 *//*/
+	public function reset_my_password($newpassword = NULL, $oldpassword = NULL)
+	{
+		// new and old password are required to confirm user
+		if($newpassword == NULL OR $oldpassword == NULL)
+		{
+			return false
+		}
 
+		$this->CI->load->model('accounts_model');
+		$this->CI->accounts_model->
+
+	} 
+	*/
 }

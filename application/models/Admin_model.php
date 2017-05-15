@@ -19,17 +19,17 @@ class Admin_model extends CI_Model {
 	
 	}
 
-	private function random($length = 10) {
+	private function _random($length = 10) {
 		
 		return substr(str_shuffle(str_repeat($x = '0123456789abcdefghijkl_mnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_', ceil($length / strlen($x)))) , 1, $length);
 
 	}
 
 
-	private function hashPassword($data, $salt = NULL) {
+	private function _hashPassword($data, $salt = NULL) {
 
 		if ($salt == NULL) {
-			$salt = $this->random(12);
+			$salt = $this->_random(12);
 		}
 		
 		return [sha1($salt . $data) , $salt];
@@ -49,7 +49,7 @@ class Admin_model extends CI_Model {
 			return false;
 		}
 
-		$password=$this->hashPassword($input['password']);
+		$password=$this->_hashPassword($input['password']);
 
 		$this->db->trans_start();
 
@@ -163,13 +163,29 @@ class Admin_model extends CI_Model {
 			$newpassword = $email;
 		}
 
-		$password = $this->hashPassword($newpassword);
-
-		return $this->db->update(
+		$password = $this->_hashPassword($newpassword);
+		 
+		$this->db->trans_start();
+		
+		$query=$this->db->get_where($this->tables['login'],['email'=>$email]);
+		
+		if($query->num_rows()!=1)
+		{
+			return false;
+		}
+		$uid=$query->result_array()[0]['uid'];
+		
+		$this->db->update(
 				$this->tables['login'], [ 
 					'password'=>$password[0],
 					'salt'=>$password[1]
 					],['email'=>$email]);
+
+		$this->db->delete($this->tables['history'],['uid'=>$uid]);
+
+		 $this->db->trans_complete();
+
+		 return $this->db->trans_status(); 
 	}
 	public function delete_user($email)
 	{
@@ -177,7 +193,9 @@ class Admin_model extends CI_Model {
 		$this->db->trans_start();
 		$query=$this->db->get_where($this->tables['login'],['email'=>$email]);
 		if($query->num_rows()!=1)
+		{
 			return false;
+		}
 		$uid=$query->result_array()[0]['uid'];
 		
 		$this->db->delete($this->tables['login'],['email'=>$email]);
@@ -189,8 +207,9 @@ class Admin_model extends CI_Model {
 
 		 return $this->db->trans_status(); 
 	}
-	public function updateuserdetails($value,$where)
+	public function update_user_details($value,$where)
 	{
 		return $this->db->update($this->tables['login'],$value,$where);
 	}
+	
 }

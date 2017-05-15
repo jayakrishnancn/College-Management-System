@@ -46,8 +46,10 @@ class User extends CI_Controller {
 		{
 			$msg = "?msg=".$msg;	
 		}
-
-		$default_controller = 'accounts/logout?msg= user has no permission to continue';
+		
+		$groupname = $this->common_functions->default_user_group();
+		
+		/*$default_controller = 'accounts/logout?msg= user has no permission to continue';
 
 		switch($groupname = $this->common_functions->default_user_group())
 		{
@@ -59,8 +61,8 @@ class User extends CI_Controller {
 						$default_controller = 'teacher'; break;
 			case 'student' : $default_controller = $groupname; break;
 			case 'parent' : $default_controller = $groupname; break;
-		}
+		}*/
 
-		redirect($default_controller.$msg);
+		redirect($groupname.$msg);
 	}
 }

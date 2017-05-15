@@ -62,7 +62,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 	 * Render Admin View
 	 * 
 	 * For loading a common admin bootstrap view .This is to improve consistency and reduce 
-	 * redudent code. Use  $this->render_admin_view() insted of $this->load->view() 
+	 * redudent code. Use  $this->_render_admin_view() insted of $this->load->view() 
 	 * 
 	 * @param  string  $page 		relative path of php view file to render
 	 * @param  array   $data 		To supply data to view 
@@ -71,7 +71,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 	 *                             
 	 * @return void
 	 */
-	private function render_admin_view($page, $data = array(), $default_directory = true) 
+	private function _render_admin_view($page, $data = array(), $default_directory = true) 
 	{
 
 
@@ -103,15 +103,15 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 	// --------------------------------------------------------------------
 	
 	/**
-	 *  Accounts Index 
+	 *  Admin Index 
 	 *
-	 * Default method for accounts controller
+	 * Default method for admin controller
 	 * 
 	 * @return void
 	 */
 	public function index() 
 	{
-		$this->render_admin_view('home');
+		$this->_render_admin_view('home');
 	}
 
 
@@ -179,7 +179,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 		$this->form_builder->setbutton('Add user');
 		// form_builder ends
 		
-		$this->render_admin_view('form_builder');
+		$this->_render_admin_view('form_builder');
 	}
 
 	// --------------------------------------------------------------------
@@ -242,7 +242,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 		
 		$this->form_builder->setbutton('Add permission'); 
 
-		$this->render_admin_view('form_builder');
+		$this->_render_admin_view('form_builder');
 	}  
 
 	// --------------------------------------------------------------------
@@ -314,7 +314,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 		
 		$this->form_builder->setbutton('Revoke permission'); 
 
-		$this->render_admin_view('form_builder');
+		$this->_render_admin_view('form_builder');
 	}
 
 	// -------------------------------------------------------------------- 
@@ -326,7 +326,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 	public function manageusers() 
 	{ 
 		$data['table'] = $this->admin_model->get_user_with_access();
-		$this->render_admin_view('table', $data);
+		$this->_render_admin_view('table', $data);
 	}
 
 	// --------------------------------------------------------------------
@@ -339,7 +339,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 	public function history() 
 	{ 
 		$data['table'] =  $this->common_functions->history();
-		$this->render_admin_view('public/history', $data,false);
+		$this->_render_admin_view('public/history', $data,false);
 	}
 
 	// --------------------------------------------------------------------
@@ -352,7 +352,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 	public function resetmypassword() 
 	{ 
 		$data['table'] =  $this->common_functions->resetmypassword();
-		$this->render_admin_view('public/history', $data,false);
+		$this->_render_admin_view('public/history', $data,false);
 	}
 
 	// 
@@ -381,7 +381,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 			$this->form_builder->addinput('password','password',true,$email);
 			$this->form_builder->setbutton('Reset Password',' confirmation '); 
 
-			$this->render_admin_view('form_builder');
+			$this->_render_admin_view('form_builder');
 
 			return;
 		} 
@@ -503,7 +503,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 			$this->form_builder->addinput('oldemail', 'hidden', true, $userdata['email']);
 			$this->form_builder->setbutton('Change Details');
-			$this->render_admin_view('form_builder');
+			$this->_render_admin_view('form_builder');
 			
 			return;
 		}

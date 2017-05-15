@@ -43,7 +43,7 @@ class Accounts extends CI_Controller {
 	 * Render Public View
 	 * 
 	 * For loading a common public bootstrap view .This is to improve consistency and reduce 
-	 * redudent code. Use  $this->render_public_view() insted of $this->load->view() 
+	 * redudent code. Use  $this->_render_public_view() insted of $this->load->view() 
 	 * 
 	 * @param  string  $page 		relative path of php view file to render
 	 * @param  array   $data 		To supply data to view 
@@ -52,7 +52,7 @@ class Accounts extends CI_Controller {
 	 *                             
 	 * @return void
 	 */
-	private function render_public_view($page, $data = array(), $default_directory = true) 
+	private function _render_public_view($page, $data = array(), $default_directory = true) 
 	{
 		// store data, page etc to an array to pass to view so that it can render that page with 
 		// data on view
@@ -155,7 +155,7 @@ class Accounts extends CI_Controller {
 		$data_to_render_public['action'] = 'accounts/login';
 
 		// Render view in public/login with title Login and form action accounts/login 
-		$this->render_public_view('login', $data_to_render_public);
+		$this->_render_public_view('login', $data_to_render_public);
 	}
 
 	// --------------------------------------------------------------------
@@ -222,7 +222,7 @@ class Accounts extends CI_Controller {
 		$data_to_render_public['title'] = 'Signup';
 		$data_to_render_public['action'] = 'accounts/signup';
 
-		$this->render_public_view('signup', $data_to_render_public);
+		$this->_render_public_view('signup', $data_to_render_public);
 	}
 
 	// --------------------------------------------------------------------

@@ -71,6 +71,15 @@ class common_functions {
 
 		$dbdata = $this->CI->public_model->user_groups($this->session_data['uid']);
 
+		if(is_array($value) )
+		{
+			if(!is_array($dbdata))
+			{
+				return FALSE;
+			}
+			return (count(array_intersect($value, $dbdata)) >0) ;
+		}
+
 		if (is_array($dbdata) && in_array($value, $dbdata)) 
 		{ 
 			return TRUE;

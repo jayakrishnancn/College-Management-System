@@ -43,7 +43,7 @@ class Principal extends CI_Controller {
 	 * Render Principal View
 	 * 
 	 * For loading a common principal bootstrap view .This is to improve consistency and reduce 
-	 * redudent code. Use  $this->render_principal_view() insted of $this->load->view() 
+	 * redudent code. Use  $this->_render_principal_view() insted of $this->load->view() 
 	 * 
 	 * @param  string  $page 		relative path of php view file to render
 	 * @param  array   $data 		To supply data to view 
@@ -52,7 +52,7 @@ class Principal extends CI_Controller {
 	 *                             
 	 * @return void
 	 */
-	private function render_principal_view($page, $data = array(), $default_directory = true) 
+	private function _render_principal_view($page, $data = array(), $default_directory = true) 
 	{
 
 
@@ -92,6 +92,6 @@ class Principal extends CI_Controller {
 	 */
 	public function index() 
 	{
-		$this->render_principal_view('home');
+		$this->_render_principal_view('home');
 	}
 }

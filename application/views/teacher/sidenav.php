@@ -1,18 +1,38 @@
+<?php 
+	if(in_array('hod',$userpermission))
+	{
+?> 
+	<ul class="list-group side-nav" >
+		<li class="list-group-item heading">Hod </li>
+		<a class="list-group-item" href="<?=base_url()?>hod/addsubject">Add Subject</a>  
+	</ul>
+<?php 
+	}
+?>
+<?php 
+	if(in_array('staff_advisor',$userpermission))
+	{
+?> 
+	<ul class="list-group side-nav" >
+		<li class="list-group-item heading">Staff Advisor</li>
+		<a class="list-group-item" href="<?=base_url()?>staff_advisor/add_teaching_plan">Add Students</a>  
+	</ul>
+<?php 
+	}
+?>
+
+<?php 
+	if(in_array('teacher',$userpermission))
+	{
+?> 
+	<ul class="list-group side-nav" >
+		<li class="list-group-item heading">Teacher </li>
+		<a class="list-group-item" href="<?=base_url()?>teacher/add_teaching_plan">Add Teaching Plan</a>  
+	</ul>
+<?php 
+	}
+?>
 <ul class="list-group side-nav" >
-  <li class="list-group-item heading">Manage Users</li>
-  <a class="list-group-item" href="<?=base_url()?>admin/manageusers">View Users</a> 
-  <a class="list-group-item" href="<?=base_url()?>admin/adduser">Add User</a>
-  <a class="list-group-item" href="<?=base_url()?>admin/manageusers">Edit User</a>
-  <a class="list-group-item" href="<?=base_url()?>admin/manageusers">Delete User</a>
-  <a class="list-group-item" href="<?=base_url()?>admin/manageusers">Reset user Password</a> 
-  <a class="list-group-item" href="<?=base_url()?>admin/adduserpermission">Add Permission</a> 
-  <a class="list-group-item" href="<?=base_url()?>admin/deleteuserpermission?delete=true">Delete Permission</a> 
-</ul>
-<ul class="list-group side-nav" >
-  <li class="list-group-item heading">Settings </li>
-  <a class="list-group-item" href="<?=base_url()?>admin/history">Login History</a>  
-</ul>
-<!--
-<a class="list-group-item" href="#demo3" data-toggle="collapse" data-parent="#MainMenu"><span class="badge"> <i class="fa fa-angle-right"></i></span>    Submenu </a>
-<ul class="collapse sub-menu" id="demo3"> <a class="list-group-item" href="#1"><span class="badge"> <i class="fa fa-angle-right"></i></span>    Cras justo odio </a><a class="list-group-item" href="#1"><span class="badge"> <i class="fa fa-angle-right"></i></span>    Cras justo odio </a><a class="list-group-item" href="#1"><span class="badge"> <i class="fa fa-angle-right"></i></span>    Cras justo odio </a></div><a class="list-group-item" href="#1"><span class="badge"> <i class="fa fa-angle-right"></i></span>    Cras justo odio </a><a class="list-group-item active" href="#1"><span class="badge"> <i class="fa fa-angle-right"></i></span>    Cras justo odio </a>
-</ul> -->
+	<li class="list-group-item heading">Settings </li>
+	<a class="list-group-item" href="<?=base_url($this->router->fetch_class())?>/history">Login History</a>  
+</ul> 

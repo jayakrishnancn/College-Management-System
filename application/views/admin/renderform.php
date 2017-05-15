@@ -22,7 +22,7 @@ if(isset($heading)  && $heading!=NULL)
 	 echo form_open($action,$attributes) ;
 		
 		
-	
+		if(isset($fields) && is_array($fields)){
 		foreach ($fields as $key => $value) {
 
 			
@@ -63,8 +63,9 @@ if(isset($heading)  && $heading!=NULL)
 
 			}
 		}
+	}// isset $fields
 
 
 		?>
-		<button class="btn btn-default btn-long"><?=(isset($button)?$button:"Submit")?></button>
+		<button class="btn btn-default btn-long <?php echo isset($button['class'])?$button['class']:"";?>"  ><?=(isset($button['value'])?$button['value']:"Submit")?></button>
 	</form> 

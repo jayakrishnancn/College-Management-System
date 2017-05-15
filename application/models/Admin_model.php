@@ -63,13 +63,15 @@ class Admin_model extends CI_Model {
 
 		 $this->db->insert($this->tables['userpermission'],['uid' =>$uid,'permissionid' =>$input['permissionid']]);
 
-		 $this->db->trans_complete();
+		 $this->db->trans_complete(); 
 
 		 return $this->db->trans_status(); 
 	}
 	public function get_user($where=NULL)
 	{
-		if($where==NULL){
+		$this->db->select("uid,email");
+		if($where==NULL)
+		{
 			return $this->db->get_where($this->tables['login'])->result_array();
 		}
 		$query=$this->db->get_where($this->tables['login'],$where);
@@ -151,12 +153,17 @@ class Admin_model extends CI_Model {
 			 'uid'=>$data['uid'], 'permissionid'=>$data['permissionid']   
 			 ]); 
 	}
-	public function resetpassword($email)
+	public function reset_password($email,$newpassword = NULL)
 	{
 		if(strlen($email)<3)
 			return false;
 
-		$password = $this->hashPassword($email);
+		if($newpassword == NULL)
+		{
+			$newpassword = $email;
+		}
+
+		$password = $this->hashPassword($newpassword);
 
 		return $this->db->update(
 				$this->tables['login'], [ 
@@ -164,7 +171,7 @@ class Admin_model extends CI_Model {
 					'salt'=>$password[1]
 					],['email'=>$email]);
 	}
-	public function deleteuser($email)
+	public function delete_user($email)
 	{
 
 		$this->db->trans_start();

@@ -19,12 +19,12 @@
 		echo '
 		<tr>
 				<td>' . $value['uid'] . '</td>
-				<td>' . $value['email'] . '</td>
+				<td>' . ($value['email']) . '</td>
 				<td>' . $value['access'] . '</td>
 				<td  class="noindex"> 
-					<a class="btn btn-default btn-sm confirmation" href="'  .base_url('admin/resetpassword')  .  '?email=' . $value['email'] . '">Reset password</a>
-					<a class="btn btn-default btn-sm " href="'  .base_url('admin/edituser')  .  '?email=' . $value['email'] . '">Edit </a>
-					<a class="btn btn-default btn-sm confirmation"  href="'  .base_url('admin/deleteuser')  .  '?email=' . $value['email'] . '">Delete </a>
+					<a class="btn btn-default btn-sm " href="'  .base_url('admin/resetpassword')  .  '?email=' . urlencode($value['email']) . '">Reset password</a>
+					<a class="btn btn-default btn-sm " href="'  .base_url('admin/edituser')  .  '?email=' . urlencode($value['email']) . '">Edit </a>
+					<a class="btn btn-default btn-sm confirmation"  href="'  .base_url('admin/deleteuser')  .  '?email=' . urlencode($value['email']) . '">Delete </a>
 				</td>
 		</tr>
 			';

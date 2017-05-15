@@ -95,10 +95,11 @@ class Form_builder{
 					];
 	}
 
-	public function setbutton($value)
+	public function setbutton($value,$class = NULL)
 	{
 
-		$this->form['button']=$value;
+		$this->form['button']['value']=$value;
+		$this->form['button']['class']=$class;
 	}
 	
 	public function renderform($formviewlocation=NULL)

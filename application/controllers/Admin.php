@@ -36,34 +36,24 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 		parent::__construct();
 		
 		// load session and common function libraries
-		$this->load->library(['session', 'common_functions']);
+		$this->load->library('common_functions');
+
+		// verify session user ip and cookie redirect if any of this is invalid else continue
+		$this->common_functions->verify_suci();
+ 
+ 		// verify if user has permission to this admin controller (area).
+		$this->common_functions->verify_permission('admin');
+
+		// set session data to a private variable
+		$this->session_data = $this->common_functions->session_data;
+ 		
+
+		$this->load->model('admin_model');
+
 
 		$this->_min_username_length = $this->common_functions->_min_username_length;
 		$this->_min_password_length = $this->common_functions->_min_password_length;
-
-		// if session is not valid redirect to accounts/login page
-		$this->common_functions->redirect_unknown_user();
-
-		// set session data to a private variable
-		$this->session_data = $this->session->userdata();
-
-		// load both accounts and public model
-		$this->load->model(['public_model']);
-
-		// verify ip from common function library
-		// this function checks if ip_address from session is same as
-		// current ip address 
-		$this->common_functions->verify_ip();
-
-  
-		// if user and cookie verified continue 
-		$this->common_functions->verify_user_and_cookie();
-		// if admin is in user permission continue
-
-		// else redirect.  
-		$this->common_functions->verify_permission('admin');
-
-		$this->load->model('admin_model');
+ 
 	}
 
 	// --------------------------------------------------------------------
@@ -92,12 +82,19 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 		// if $default_directory is true render from view/public directory  
 		$data_to_pass['page'] = ($default_directory === true) ?  'admin/' . $page:$page;
    	
-   	// session data
+   		// session data
 		$data_to_pass['data']['session_data'] = $this->session_data; 
-   	// setup data
+	
+	   	// setup data from public model
+		$this->load->model('public_model');
+		
+		// To display college name and other details 
 		$data_to_pass['setup'] = $this->public_model->setup_data();
-		$data_to_pass['userpermission'] = $this->admin_model->get_usergroup($this->session_data['uid']);
 
+		// To display in navbar
+		$data_to_pass['userpermission'] = $this->public_model->user_groups($this->session_data['uid']);
+
+		// load default admin/ bootstrap view  in application/view directory 
 		$this->load->view('admin/bootstrap', $data_to_pass);
 	}
 
@@ -133,10 +130,11 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 		{
 			$this->load->library('form_validation');
 
-			$this->form_validation->set_rules('username', 'Username', 'trim|required|min_length[' . $this->_min_username_length. ']');
+			$this->form_validation->set_rules('username', 'Username', 'trim|required|alpha_numeric|min_length[' . $this->_min_username_length. ']');
 			$this->form_validation->set_rules('password', 'Password', 'trim|required|min_length[' .  $this->_min_password_length . ']');
 			$this->form_validation->set_rules('permissionid', 'permissions', 'trim|required|greater_than_equal_to[0]|numeric|is_natural');
 			
+			// run the form validation
 			if ($this->form_validation->run() == FALSE) 
 			{
 				redirect('admin/adduser?msg=Check all fields'); 

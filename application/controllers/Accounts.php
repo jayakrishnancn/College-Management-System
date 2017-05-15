@@ -250,9 +250,9 @@ class Accounts extends CI_Controller {
 		
 		// if message passed through get('msg') it has to pass to login page
 		$prev_msg = (($this->input->get('msg') == FALSE) ? FALSE : $this->input->get('msg'));
-
+ 
 		// append ' logout successful ' message  to previous message and redirect to login page 
-		$msg = ($prev_msg == FALSE) ? "msg=Logout successful" : "msg=" . $prevmsg . "  Logout successful";
+		$msg = ($prev_msg == FALSE) ? "msg=Logout successful" : "msg=" . $prev_msg . " ";
 		redirect("accounts/login?" . $msg);
 	}
 	

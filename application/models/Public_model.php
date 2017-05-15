@@ -28,8 +28,12 @@ class Public_model extends CI_Model {
 	 */
 	public function default_user_group($uid)
 	{ 
-
-		 return $this->user_groups($uid)[0];
+		$result = $this->user_groups($uid);
+		if(is_array($result))
+		{
+			 return $result[0];
+		}
+		return $result;
 
 	}
 

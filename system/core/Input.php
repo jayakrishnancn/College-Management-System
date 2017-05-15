@@ -237,7 +237,8 @@ class CI_Input {
 	 * @param	bool	$xss_clean	Whether to apply XSS filtering
 	 * @return	mixed
 	 */
-	public function get($index = NULL, $xss_clean = NULL)
+	// changed default to true so we dont have to supply true argument every time
+	public function get($index = NULL, $xss_clean = TRUE)
 	{
 		return $this->_fetch_from_array($_GET, $index, $xss_clean);
 	}
@@ -251,7 +252,8 @@ class CI_Input {
 	 * @param	bool	$xss_clean	Whether to apply XSS filtering
 	 * @return	mixed
 	 */
-	public function post($index = NULL, $xss_clean = NULL)
+	// changed default to true so we dont have to supply true argument every time
+	public function post($index = NULL, $xss_clean = TRUE)
 	{
 		return $this->_fetch_from_array($_POST, $index, $xss_clean);
 	}
@@ -296,8 +298,9 @@ class CI_Input {
 	 * @param	mixed	$index		Index for item to be fetched from $_COOKIE
 	 * @param	bool	$xss_clean	Whether to apply XSS filtering
 	 * @return	mixed
-	 */
-	public function cookie($index = NULL, $xss_clean = NULL)
+	 */ 
+	// changed default to true so we dont have to supply true argument every time
+	public function cookie($index = NULL, $xss_clean = TRUE)
 	{
 		return $this->_fetch_from_array($_COOKIE, $index, $xss_clean);
 	}
@@ -311,7 +314,9 @@ class CI_Input {
 	 * @param	bool	$xss_clean	Whether to apply XSS filtering
 	 * @return	mixed
 	 */
-	public function server($index, $xss_clean = NULL)
+	
+	// changed default to true so we dont have to supply true argument every time
+	public function server($index, $xss_clean = TRUE)
 	{
 		return $this->_fetch_from_array($_SERVER, $index, $xss_clean);
 	}

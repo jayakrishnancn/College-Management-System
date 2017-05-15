@@ -23,21 +23,11 @@ class User extends CI_Controller {
 	{ 
 		parent::__construct();
 		
-		// load  common function libraries
+		// load session and common function libraries
 		$this->load->library('common_functions');
- 
-		// if session not set redirect to logout page
-		$this->common_functions->redirect_unknown_user(); 
 
-		// verify ip from common function library
-		// this function checks if ip_address from session is same as
-		// current ip address and redirect 
-		$this->common_functions->verify_ip();
-
- 		// if user and cookie verified continue 
-		$this->common_functions->verify_user_and_cookie();
-  
-
+		// verify session user ip and cookie redirect if any of this is invalid else continue
+		$this->common_functions->verify_suci(); 
 	}
 
 	// --------------------------------------------------------------------

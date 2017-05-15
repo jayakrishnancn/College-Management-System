@@ -77,12 +77,7 @@ class Admin_model extends CI_Model {
 				return $query->result_array()[0];
 		return false;
 	}
-	public function get_usergroup($uid)
-	{
-			$array=$this->db->query('SELECT groupname FROM permission WHERE permissionid IN ( SELECT permissionid from userpermission WHERE userpermission.uid = ' .  $uid.  ' )')->result_array();
-			return array_column($array,'groupname');
-			
-	}
+	 
 	/**
 	 * get user with access 
 	 * @param  int  $uid           user id

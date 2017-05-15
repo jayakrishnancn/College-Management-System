@@ -11,7 +11,7 @@ class common_functions {
 	 * @var object
 	 */
 	private $CI;
-	private $session_data = [];
+	public $session_data = [];
 
 	/**
 	 * To ser minimum length of username and password
@@ -52,7 +52,7 @@ class common_functions {
 
 		if ($redirect_invalid) 
 		{
-			redirect('accounts/logout?msg=Login again');
+			redirect('accounts/logout?msg=Session Expired. Login again');
 		}
 		
 			return FALSE;
@@ -94,15 +94,15 @@ class common_functions {
 	 * 
 	 * @return bool  
 	 */
-	public function verify_ip($redirect_invalid=TRUE) 
+	public function verify_ip($redirect_invalid = TRUE) 
 	{
-		// check for validity
+		// check for valid ip address
 		if($this->CI->input->ip_address() != $this->session_data['ip_address'])
 		{   
 			// redirect if redirect_invalid is set to TRUE
 			if($redirect_invalid)
 			{
-				redirect('accounts/logout?msg=Login Again.');
+				redirect('accounts/logout?msg=Invalid session. Login Again');
 			}
 			return FALSE;
 		}
@@ -117,7 +117,7 @@ class common_functions {
 	 * 
 	 * @return bool 	if verifed cookie return TRUE 
 	 */
-	public function verify_user_and_cookie($data=NULL,$redirect_invalid=TRUE)
+	public function verify_user_and_cookie($data = NULL,$redirect_invalid = TRUE)
 	{
 		if($data == NULL)
 		{
@@ -166,4 +166,28 @@ class common_functions {
 	{
 		return $this->CI->public_model->user_groups($this->session_data['uid'])[0];
 	}
+
+	// --------------------------------------------------------------------
+
+	/**
+	 * Verify SUCI
+	 * 
+	 * Verify Session User ip cookie and redirect accordingly 
+	 * @param  boolean $redirect_invalid [description]
+	 * @return [type]                    [description]
+	 */
+	public function verify_suci($redirect_invalid = TRUE)
+	{
+		// if session is not valid redirect to accounts/login page
+		$this->redirect_unknown_user($redirect_invalid);
+
+		// verify ip from common function library
+		// this function checks if ip_address from session is same as
+		// current ip address 
+		$this->verify_ip($redirect_invalid);
+
+		// if user and cookie verified continue 
+		$this->verify_user_and_cookie(NULL,$redirect_invalid);
+	}
+
 }

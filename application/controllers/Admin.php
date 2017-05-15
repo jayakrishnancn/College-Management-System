@@ -42,34 +42,24 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 		$this->_min_password_length = $this->common_functions->_min_password_length;
 
 		// if session is not valid redirect to accounts/login page
-		if (!$this->session->userdata('uid')) {
-			redirect('accounts/login?msg=Login again');
-			return;
-		}
+		$this->common_functions->redirect_unknown_user();
 
 		// set session data to a private variable
 		$this->session_data = $this->session->userdata();
 
 		// load both accounts and public model
-		$this->load->model(['accounts_model', 'public_model']);
+		$this->load->model(['public_model']);
 
 		// verify ip from common function library
 		// this function checks if ip_address from session is same as
 		// current ip address 
-		$this->common_functions->verify_ip(true);
+		$this->common_functions->verify_ip();
 
-		// temporary array store session data
-		$session_data_to_verify = array(
-				'ip_address' => $this->input->ip_address() ,
-				'cookie_id' => $this->session_data['cookie_id'],
-				'email' => $this->session_data['email'],
-				'uid' => $this->session_data['uid']
-			);
-
+  
 		// if user and cookie verified continue 
-		$this->common_functions->verify_user_and_cookie($session_data_to_verify);
-
+		$this->common_functions->verify_user_and_cookie();
 		// if admin is in user permission continue
+
 		// else redirect.  
 		$this->common_functions->verify_permission('admin');
 

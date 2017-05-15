@@ -67,7 +67,7 @@ class Accounts extends CI_Controller {
 	// --------------------------------------------------------------------
 	
 	/**
-	 *  Accounts . Index 
+	 *  Accounts / Index 
 	 *
 	 * Default method for accounts controller
 	 * calls login by default (might change in future)

@@ -1,55 +1,62 @@
 <?php
+
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class User extends CI_Controller {
-	private $uid = NULL;
-	private $sessionData = [];
+/**
+ * User Class
+ * 
+ * This class is to redirect the user to corresponding controller and check user verification.
+ * Logic to redirect will be changed in future. 
+ * 
+ * @category	Controller
+ * @author	  jayakrishnancn
+ * @link		https://github.com/jayakrishnancn/College-Management-System
+ */ 
+class User extends CI_Controller { 
 
-
-	private function findCookie() {
-
-		if ($this->session->userdata('uid')) {
-			$this->sessionData = $this->session->userdata();
-			
-			return true;
-		}
-		
-		return false;
-	}
-
-
-	function __construct() {
-
+	/**
+	 * Class constructor
+	 *
+	 * @return  void
+	 */
+	function __construct() 
+	{ 
 		parent::__construct();
-		$this->load->library('session');
+		
+		// load  common function libraries
+		$this->load->library('common_functions');
+ 
+		// if session not set redirect to logout page
+		$this->common_functions->redirect_unknown_user(); 
 
-		if (!$this->findCookie()) {
-			redirect('accounts?msg=Login again', 'refresh');
-			die;
-		}
+		// verify ip from common function library
+		// this function checks if ip_address from session is same as
+		// current ip address and redirect 
+		$this->common_functions->verify_ip();
 
-		$this->load->model(['accountsModel','publicModel']);
-		$cookiedataforverification = array(
-			'ipAddress' => $this->input->ip_address() ,
-			'cookieid' => $this->sessionData['cookieid'],
-			'uid' => $this->sessionData['uid']
-		);
-
-		if ($this->accountsModel->verifyUserSessionAndIp($cookiedataforverification) != true) {
-			redirect('accounts?msg=can\'t verify user!. Login Again', 'refresh');
-			die;
-		}  
+ 		// if user and cookie verified continue 
+		$this->common_functions->verify_user_and_cookie();
+  
 
 	}
 
+	// --------------------------------------------------------------------
 
-	public function index() {
+	/**
+	 * User/index
+	 *
+	 * default method for User controller
+	 * 
+	 * @return void
+	 */
+	public function index() 
+	{
 		$msg="";
 		if($msg = $this->input->get('msg'))
 		{
 			$msg = "?msg=".$msg;	
 		}
-		redirect($this->publicModel->userDefaultGroup($this->sessionData['uid']).$msg,'refresh');
 
+		redirect($this->common_functions->default_user_group().$msg);
 	}
 }

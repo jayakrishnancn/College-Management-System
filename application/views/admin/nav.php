@@ -5,7 +5,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
     echo '<div id="snackbar" class="show">'  . $this->input->get('msg') .  ' </div>';
   }
 
-?><nav class="navbar navbar-inverse navbar-static-top"  >
+?><nav class="navbar navbar-default light-blue navbar-static-top"  >
   <div class="container-fluid">
     <!-- Brand and toggle get grouped for better mobile display -->
     <div class="navbar-header">

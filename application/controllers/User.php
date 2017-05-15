@@ -47,6 +47,20 @@ class User extends CI_Controller {
 			$msg = "?msg=".$msg;	
 		}
 
-		redirect($this->common_functions->default_user_group().$msg);
+		$default_controller = 'accounts/logout?msg= user has no permission to continue';
+
+		switch($groupname = $this->common_functions->default_user_group())
+		{
+			case 'admin' : $default_controller = $groupname; break;
+			case 'principal' : $default_controller = $groupname; break;
+			case 'hod' :
+			case 'teacher' :
+			case 'staff_advisor' :
+						$default_controller = 'teacher'; break;
+			case 'student' : $default_controller = $groupname; break;
+			case 'parent' : $default_controller = $groupname; break;
+		}
+
+		redirect($default_controller.$msg);
 	}
 }

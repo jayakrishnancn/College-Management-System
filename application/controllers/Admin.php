@@ -66,7 +66,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 	 * 
 	 * @param  string  $page 		relative path of php view file to render
 	 * @param  array   $data 		To supply data to view 
-	 * @param  boolean $default_directory 	If true relative path will start from view/admin. 
+	 * @param  boolean $default_directory 		If true relative path will start from view/admin. 
 	 *                             If false  relative path will start from view
 	 *                             
 	 * @return void
@@ -106,7 +106,6 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 	 *  Accounts Index 
 	 *
 	 * Default method for accounts controller
-	 * calls login by default (might change in future)
 	 * 
 	 * @return void
 	 */

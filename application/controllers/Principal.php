@@ -101,7 +101,8 @@ class Principal extends MY_Controller {
 
 		$this->form_builder->addlabel('Course Name');
 		$this->form_builder->addinput(['name'=>'course_name','autofocus'=>true]);
-		$this->_render_principal_view('public/form_builder',false,false);
+
+		$this->_render_principal_view('public/form_builder', FALSE, FALSE);
 	}
 
 	// --------------------------------------------------------------------
@@ -109,16 +110,20 @@ class Principal extends MY_Controller {
 	/**
 	 * Add Course
 	 *
-	 * This will add course in courses table
+	 * This will Display all courses
 	 * 
 	 * @return void
 	 */
 	public function view_courses()
 	{ 
- 		$data['table'] = $this->teacher_model->get_course();
+
+		// table data
+		$data['table'] = $this->teacher_model->get_course();
+		$data['table_title'] = 'Current Courses ';
  		foreach ($data['table'] as $key => &$value) {
  			$value['action'] = "<a href='". base_url($this->router->class."/delete_course")."?course_name=" . urlencode($value['course_name'] ). "' class='btn btn-default btn-sm confirmation'>Delete Course</a>";
  		}
+ 		
 		$this->_render_principal_view('public/table',$data,false);
 	}
 
@@ -154,6 +159,124 @@ class Principal extends MY_Controller {
 		}
 
 			redirect($this->router->class . '/view_courses?msg=Invalid input. Try Again');
+			return;
+
+	}
+
+	// --------------------------------------------------------------------
+	/**
+	 * Add Department
+	 *
+	 * This will add course in courses table
+	 * 
+	 * @return void
+	 */
+	public function add_department()
+	{ 
+
+		if($inputs = $this->input->post())
+		{
+			 
+			// validate the username and password
+			$this->load->library('form_validation');
+			
+			// username and password : Required and check for min_length
+			$this->form_validation->set_rules('department_name', 'Department Name', 'trim|required|min_length[4]'); 
+			$this->form_validation->set_rules('hod_name', 'HOD name', 'trim|required|min_length[4]'); 
+
+			// if the requirement are not meet redirect to signup page to re-enter the signup details 
+			if ($this->form_validation->run() == FALSE)
+			{ 
+				redirect($this->current_url . '?msg=insufficient Inputs. Try Again');
+				return;
+			}
+
+			if($this->teacher_model->add_department($inputs['department_name'],$inputs['hod_name']))
+			{
+				redirect($this->current_url . '?msg=Department Created');
+				return;
+			}
+
+			redirect($this->current_url . '?msg=can\'t Create Department. Try Again');
+			return;
+			
+		}
+
+		$this->load->library('form_builder');
+		$this->form_builder->start_form(['action' => $this->current_url,'heading'=>'Add Department']);
+
+		$this->form_builder->addlabel('Department Name');
+		$this->form_builder->addinput(['name'=>'department_name','autofocus'=>true]);
+		
+		$this->form_builder->addlabel('Department Hod');
+  
+		// dropdown starts
+		$this->form_builder->startdropdown('hod_name');
+		
+		foreach ($this->teacher_model->get_user() as $key => $value) 
+		{
+			$this->form_builder->dropdownoption($value['email']);
+		}
+		$this->form_builder->enddropdown();
+		// dropdown ends 
+
+		$this->_render_principal_view('public/form_builder', FALSE, FALSE);
+	}
+
+	// --------------------------------------------------------------------
+	
+	/**
+	 * View Departments
+	 *
+	 * This will Display all depeartments
+	 * 
+	 * @return void
+	 */
+	public function view_departments()
+	{ 
+
+		// table data
+		$data['table'] = $this->teacher_model->get_department();
+		$data['table_title'] = 'Current Department ';
+ 		foreach ($data['table'] as $key => &$value) {
+ 			$value['action'] = "<a href='". base_url($this->router->class."/delete_department")."?department_name=" . urlencode($value['department_name'] ). "' class='btn btn-default btn-sm confirmation'>Delete Department</a>";
+ 		}
+ 		
+		$this->_render_principal_view('public/table',$data,false);
+	}
+
+	// --------------------------------------------------------------------
+	
+	/**
+	 * Delete Course
+	 *
+	 * This will delete course from courses table
+	 * 
+	 * @return void
+	 */
+	public function delete_department()
+	{ 
+
+		if($department_name = $this->input->get('department_name'))
+		{
+			$department_name = trim($department_name);
+
+			if(strlen($department_name)>2)
+			{
+				if($this->teacher_model->delete_department($department_name))
+				{
+					redirect($this->router->class . '/view_departments?msg=Department Deleted');
+					return;
+				}
+
+				redirect($this->router->class . '/view_departments?msg=can\'t delete Department. Try Again');
+				return;
+			}
+			redirect($this->router->class . '/view_departments?msg=insufficient Inputs. Try Again');
+			return;
+		}
+
+			redirect($this->router->class . '/view_departments?msg=Invalid input. Try Again');
 			return;
 
 	}

@@ -1,4 +1,4 @@
-
+<div class="main-components">
 <?php 
 if(isset($heading)  && $heading!=NULL)
 		{
@@ -69,3 +69,4 @@ if(isset($heading)  && $heading!=NULL)
 		?>
 		<button class="btn btn-default btn-long <?php echo isset($button['class'])?$button['class']:"";?>"  ><?=(isset($button['value'])?$button['value']:"Submit")?></button>
 	</form> 
+</div>

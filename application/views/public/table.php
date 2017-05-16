@@ -1,12 +1,12 @@
-<h3>
+<div class="main-components">
+  <h3>
 <?php 
-		echo (isset($table_title))?$table_title: "Table";
-	?>
+    echo (isset($table_title))?$table_title: "Table";
+  ?>
       <input type="text" class="form-control  " style="width: auto;float: right;" id="searchtable" placeholder="Enter keyword to search" autofocus>
 </h3>
 
-<hr>
-
+<hr> 
 <?php if (count($table) > 0): ?>
 <table class="table table-bordered tabletosearch">
   <thead>
@@ -23,5 +23,7 @@
   </tbody>
 </table>
 <?php else:?>
-	<div class="alert alert-info text-center">No record found</div>
+  <div class="alert alert-info text-center">No record found</div>
 <?php endif; ?>
+
+</div>

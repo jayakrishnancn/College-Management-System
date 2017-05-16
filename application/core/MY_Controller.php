@@ -103,10 +103,19 @@ class MY_Controller extends CI_Controller {
 		// load default teacher bootstrap view	in application/view directory 
 		$this->load->view('bootstrap', $data_to_pass);
 	}
+
+	/**
+	 * View History
+	 *
+	 * Display a table of login history 
+	 * 
+	 * @return void
+	 */
 	public function history()
 	{ 
 
 		$data['table'] =  $this->common_functions->history();
-		$this->_render_view('history', $data,'public');
+		$data['table_title'] =  "History";
+		$this->_render_view('public/table', $data);
 	}
 }

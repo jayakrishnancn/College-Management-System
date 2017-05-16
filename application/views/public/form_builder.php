@@ -1,2 +1,2 @@
 <?php 
-		$this->form_builder->renderform('admin/renderform'); 
+		$this->form_builder->renderform('public/render_form'); 

@@ -1,1 +1,1 @@
-html home
+principal [home]

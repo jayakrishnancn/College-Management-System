@@ -17,7 +17,7 @@ class Form_builder{
 		$this->CI->load->helper('form');
 	} 
 
-	public function startform($param)
+	public function start_form($param)
 	{
 
 		$this->form['action']=$param['action'];

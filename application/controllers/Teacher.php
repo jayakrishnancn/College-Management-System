@@ -42,9 +42,9 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 	 *														 
 	 * @return void
 	 */
-	private function _render_teacher_view($page, $data = array(), $default_directory = true) 
+	private function _render_teacher_view($page, $data = array(), $default_directory = 'teacher/teaching') 
 	{
-		$this->_render_all_teacher_view($page, $data, $default_directory, 'teaching');
+		$this->_render_view($page, $data, $default_directory);
 	}
 
 

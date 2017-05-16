@@ -11,13 +11,14 @@ $('.confirmation').click(function(e) {
     if (!confirm('Are you sure?')) e.preventDefault();
 });
 
-/* to highlight the search table */
-function addHighlighting(element, textToHighlight) {
-    var text = element.text().toLowerCase().trim();
-    var highlightedText = '<span class="highlight">' + textToHighlight + '</span>';
-    var newText = text.replace(textToHighlight, highlightedText);
-    element.html(newText);
-}
+/* to highlight the search table
+    function addHighlighting(element, textToHighlight) {
+        var text = element.text().toLowerCase().trim();
+        var highlightedText = '<span class="highlight">' + textToHighlight + '</span>';
+        var newText = text.replace(textToHighlight, highlightedText);
+        element.html(newText);
+    }
+ */
 $(document).ready(function() {
     $("#searchtable").keyup(function() {
         var value = this.value.toLowerCase().trim();
@@ -27,7 +28,7 @@ $(document).ready(function() {
                 var id = $(this).text().toLowerCase().trim();
                 var not_found = (id.indexOf(value) == -1);
                 $(this).closest('tr').toggle(!not_found);
-                addHighlighting($(this), value);
+                // addHighlighting($(this), value);
                 return not_found;
             });
         });

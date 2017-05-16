@@ -1,4 +1,16 @@
 <?php 
+	if(in_array('principal',$userpermission))
+	{
+?> 
+	<ul class="list-group side-nav" >
+		<li class="list-group-item heading">Principal </li>
+		<a class="list-group-item" href="<?=base_url()?>principal/add_course">Add Course</a>  
+		<a class="list-group-item" href="<?=base_url()?>principal/view_courses">View Course</a>  
+	</ul>
+<?php 
+	}
+?>
+<?php 
 	if(in_array('hod',$userpermission))
 	{
 ?> 

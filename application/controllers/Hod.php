@@ -42,9 +42,9 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 	 *														 
 	 * @return void
 	 */
-	private function _render_hod_view($page, $data = array(), $default_directory = true) 
-	{
-		$this->_render_all_teacher_view($page, $data, $default_directory, 'hod');
+	private function _render_hod_view($page, $data = array(), $default_directory = 'teacher/hod') 
+	{ 
+		$this->_render_view($page, $data, $default_directory);
 	}
 
 

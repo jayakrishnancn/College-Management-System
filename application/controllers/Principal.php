@@ -10,31 +10,24 @@ defined('BASEPATH') OR exit('No direct script access allowed');
  * @author	jayakrishnancn
  * @link		https://github.com/jayakrishnancn/College-Management-System
  */ 
-class Principal extends CI_Controller { 
-
+class Principal extends MY_Controller { 
 	/**
-	 * Session data in array so that redudent function call can be reduced
-	 * @var array
-	 */	
-	private $session_data = [];
-	 
+	 * Class Constructor
+	 * @return  void
+	 */
 	function __construct() 
 	{
-
+		//  MY_Controller constructor will load common_functions library,
+		//   verify session, user, cookie, ip etc. set session_data etc
 		parent::__construct();
-		
-		// load session and common function libraries
-		$this->load->library('common_functions');
 
-		// verify session user ip and cookie redirect if any of this is invalid else continue
-		$this->common_functions->verify_suci();
- 
- 		// verify if user has permission to this principal controller (area).
-		$this->common_functions->verify_permission('principal');
+		// already do a check and verify user and cookie in parent class.
+		// so only checkfor permission in this class 
+ 		// verify if user has permission to this principal controller (principal panel).
+		$this->common_functions->verify_permission('principal');  
 
-		// set session data to a private variable
-		$this->session_data = $this->common_functions->session_data;
- 		    
+		// load teacher model
+		$this->load->model('teacher_model');
 	}
 
 	// --------------------------------------------------------------------
@@ -47,38 +40,16 @@ class Principal extends CI_Controller {
 	 * 
 	 * @param  string  $page 		relative path of php view file to render
 	 * @param  array   $data 		To supply data to view 
-	 * @param  boolean $default_directory 		If true relative path will start from 
-	 *                 application/view/principal.otherwise from application/view/
+	 * @param  boolean $default_directory 		pass a directory path to render. To render from 
+	 *                                      view/ pass use $default_directory = false 
 	 *                             
 	 * @return void
 	 */
-	private function _render_principal_view($page, $data = array(), $default_directory = true) 
-	{
-
-
-		// store data, page etc to an array to pass to view so that it can render that page with 
-		// data on view
-		$data_to_pass['data'] = $data;
-
-		// if $default_directory is true render from view/public directory  
-		$data_to_pass['page'] = ($default_directory === true) ?  'principal/' . $page:$page;
-   	
-   		// session data
-		$data_to_pass['data']['session_data'] = $this->session_data; 
-	
-	   	// setup data from public model
-		$this->load->model('public_model');
-		
-		// To display college name and other details 
-		$data_to_pass['setup'] = $this->public_model->setup_data();
-
-		// To display in navbar
-		$data_to_pass['userpermission'] = $this->public_model->user_groups($this->session_data['uid']);
-
-		// filter all data 
-		// $data_to_pass = $this->security->xss_clean($data_to_pass); 
+	private function _render_principal_view($page, $data = array(), $default_directory = 'principal') 
+	{ 
+		$data['title'] = 'Principal';
 		// load default principal/ bootstrap view  in application/view directory 
-		$this->load->view('principal/bootstrap', $data_to_pass);
+		$this->_render_view($page,$data,$default_directory);
 	} 
 
 	// --------------------------------------------------------------------
@@ -94,4 +65,97 @@ class Principal extends CI_Controller {
 	{
 		$this->_render_principal_view('home');
 	}
+
+	// --------------------------------------------------------------------
+	/**
+	 * Add Course
+	 *
+	 * This will add course in courses table
+	 * 
+	 * @return void
+	 */
+	public function add_course()
+	{ 
+
+		if($course_name = $this->input->post('course_name'))
+		{
+			$course_name = trim($course_name);
+
+			if(strlen($course_name)>2)
+			{
+				if($this->teacher_model->add_course($course_name))
+				{
+					redirect($this->current_url . '?msg=Course Created');
+					return;
+				}
+
+				redirect($this->current_url . '?msg=can\'t Create Course. Try Again');
+				return;
+			}
+			redirect($this->current_url . '?msg=insufficient Inputs. Try Again');
+			return;
+		}
+
+		$this->load->library('form_builder');
+		$this->form_builder->start_form(['action' => $this->current_url,'heading'=>'Add Course']);
+
+		$this->form_builder->addlabel('Course Name');
+		$this->form_builder->addinput(['name'=>'course_name','autofocus'=>true]);
+		$this->_render_principal_view('public/form_builder',false,false);
+	}
+
+	// --------------------------------------------------------------------
+	
+	/**
+	 * Add Course
+	 *
+	 * This will add course in courses table
+	 * 
+	 * @return void
+	 */
+	public function view_courses()
+	{ 
+ 		$data['table'] = $this->teacher_model->get_course();
+ 		foreach ($data['table'] as $key => &$value) {
+ 			$value['action'] = "<a href='". base_url($this->router->class."/delete_course")."?course_name=" . urlencode($value['course_name'] ). "' class='btn btn-default btn-sm confirmation'>Delete Course</a>";
+ 		}
+		$this->_render_principal_view('public/table',$data,false);
+	}
+
+	// --------------------------------------------------------------------
+	
+	/**
+	 * Delete Course
+	 *
+	 * This will delete course from courses table
+	 * 
+	 * @return void
+	 */
+	public function delete_course()
+	{ 
+
+		if($course_name = $this->input->get('course_name'))
+		{
+			$course_name = trim($course_name);
+
+			if(strlen($course_name)>2)
+			{
+				if($this->teacher_model->delete_course($course_name))
+				{
+					redirect($this->router->class . '/view_courses?msg=Course Deleted');
+					return;
+				}
+
+				redirect($this->router->class . '/view_courses?msg=can\'t delete Course. Try Again');
+				return;
+			}
+			redirect($this->router->class . '/view_courses?msg=insufficient Inputs. Try Again');
+			return;
+		}
+
+			redirect($this->router->class . '/view_courses?msg=Invalid input. Try Again');
+			return;
+
+	}
+
 }

@@ -12,6 +12,7 @@ class common_functions {
 	 */
 	private $CI;
 	public $session_data = [];
+	public $current_url = NULL;
 
 	/**
 	 * To ser minimum length of username and password
@@ -31,7 +32,8 @@ class common_functions {
 	
 		$this->CI->load->library('session');
 		$this->CI->load->model('public_model');
-		$this->session_data=$this->CI->session->userdata();
+		$this->session_data = $this->CI->session->userdata();
+		$this->current_url = $this->CI->router->class . "/" . $this->CI->router->method; 
 	}
 	
 	// --------------------------------------------------------------------

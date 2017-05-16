@@ -161,7 +161,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 		$this->load->library('form_builder');
 
 		// form starts to register in form_builder library
-		$this->form_builder->startform(['action' => 'admin/adduser', 'heading' => 'Add User']);
+		$this->form_builder->start_form(['action' => 'admin/adduser', 'heading' => 'Add User']);
 		
 		$this->form_builder->addlabel('Username');
 		$this->form_builder->addinput(['name' => 'username', 'placeholder' => "Username", 'autofocus' => true]);
@@ -216,7 +216,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
  
 		$this->load->library('form_builder'); 
 
-		$this->form_builder->startform(['action' => 'admin/adduserpermission', 'heading' => 'Add User Permission']);
+		$this->form_builder->start_form(['action' => 'admin/adduserpermission', 'heading' => 'Add User Permission']);
 		$this->form_builder->addlabel('Username');
 
 		// dropdown starts
@@ -288,7 +288,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
  
 		$this->load->library('form_builder'); 
 
-		$this->form_builder->startform(['action' => 'admin/deleteuserpermission', 'heading' => 'Delete User Permission']);
+		$this->form_builder->start_form(['action' => 'admin/deleteuserpermission', 'heading' => 'Delete User Permission']);
 		$this->form_builder->addlabel('Username');
 
 		// dropdown starts
@@ -373,7 +373,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 			$this->load->library('form_builder'); 
 
-			$this->form_builder->startform(['action' => 'admin/resetpassword', 'heading' => 'Change Password']);
+			$this->form_builder->start_form(['action' => 'admin/resetpassword', 'heading' => 'Change Password']);
 			
 			$this->form_builder->addlabel('change password of user '.$email);
 			$this->form_builder->addinput('username','hidden',false,$email);
@@ -496,7 +496,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 		 	// if get then show the form to fill the changes
 			$userdata = $this->admin_model->get_user(['email' => $email]);
 
-			$this->form_builder->startform(['action' => 'admin/edituser', 'heading' => 'Change User Details (' . $email . ') ']);
+			$this->form_builder->start_form(['action' => 'admin/edituser', 'heading' => 'Change User Details (' . $email . ') ']);
 
 			$this->form_builder->addlabel('E-mail id');
 			$this->form_builder->addinput('email', 'text', true, $userdata['email']);

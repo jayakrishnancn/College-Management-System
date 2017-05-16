@@ -1,1 +1,1 @@
-html home
+teacher [home]

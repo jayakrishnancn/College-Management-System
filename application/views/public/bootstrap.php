@@ -9,8 +9,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 		<title><?=isset($data['title'])?$data['title']:""?></title>
 		<link rel="icon" href="/favicon.ico" type="image/x-icon">
-		<link rel="stylesheet" href="<?=base_url()?>assets/vendor/bootstrap.min.css"><!-- 
-		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css"> -->
+		<link rel="stylesheet" href="<?=base_url()?>assets/vendor/bootstrap.min.css"> 
 		<link rel="stylesheet" href="<?=base_url()?>assets/css/style.css">
 	</head>
 	<body>
@@ -30,7 +29,5 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 				}
 			}
 		?>
-		<script src="<?=base_url()?>assets/vendor/jquery.min.js"></script>
-		<script src="<?=base_url()?>assets/vendor/bootstrap.min.js"></script>
 	</body>
 </html>

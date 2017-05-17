@@ -314,6 +314,13 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 	public function manageusers() 
 	{ 
 		$data['table'] = $this->admin_model->get_user_with_access();
+		$data['table_title'] = 'Users ';
+ 		foreach ($data['table'] as $key => &$value) {
+ 			$value['action'] = '<a class="btn btn-default btn-sm " href="'  .base_url('admin/resetpassword')  .  '?email=' . urlencode($value['email']) . '">Reset password</a>
+					<a class="btn btn-default btn-sm " href="'  .base_url('admin/edituser')  .  '?email=' . urlencode($value['email']) . '">Edit </a>
+					<a class="btn btn-default btn-sm confirmation"  href="'  .base_url('admin/deleteuser')  .  '?email=' . urlencode($value['email']) . '">Delete </a>';
+ 		}
+ 		unset($value);
 		$this->_render_admin_view('public/table', $data,false);
 	}
 
@@ -357,7 +364,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 			$this->form_builder->addinput('password','password',true,$email);
 			$this->form_builder->setbutton('Reset Password',' confirmation '); 
 
-			$this->_render_admin_view('form_builder');
+			$this->_render_admin_view('public/form_builder',FALSE,FALSE);
 
 			return;
 		} 
@@ -406,15 +413,22 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 	{	
 		$this->load->library('form_validation');
 
-		if ($email=$this->input->get('email')) 
+		if ($this->input->post('email') && $this->input->post('type_yes')) 
 		{
 
-			$this->form_validation->set_data($_GET);
 			$this->form_validation->set_rules('email', 'Email-id', 'required|min_length[3]');
 
 			if ($this->form_validation->run() == FALSE) 
 			{
 				redirect('admin/manageusers?msg=username not valid'); 
+				return;
+			}
+
+			$email=$this->input->post('email');
+			
+			if(strtolower($this->input->post('type_yes') )!= 'yes')
+			{
+				redirect('admin/deleteuser?email=' .  $email .  '&msg=Confirm deleted'); 
 				return;
 			}
  
@@ -425,6 +439,18 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 			}
 
 			redirect('admin/manageusers?msg=Cant delete user.Try again'); 
+			return;
+		}
+		else if($email = $this->input->get('email'))
+		{
+
+			$this->load->library('form_builder'); 
+			$this->form_builder->start_form(['action' => $this->current_url, 'heading' =>'Confirm Delete User']);
+			$this->form_builder->addlabel('Type "Yes" to delete User  ');
+			$this->form_builder->addinput('type_yes');
+			$this->form_builder->setbutton('Confirm Delete');
+			$this->form_builder->addinput('email','hidden',false,$email);
+			$this->_render_admin_view('public/form_builder',false,false);
 			return;
 		}
 

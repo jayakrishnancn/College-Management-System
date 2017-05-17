@@ -103,8 +103,8 @@ class Admin_model extends CI_Model {
 				$where=$uid;
 			}
 		}
-
-		$query=$this->db->get_where($this->tables['login'],$where);
+		$this->db->select('uid,email');
+		$query=$this->db->get_where('login',$where);
 
 		$result = $query->result_array();
 		foreach ($result as $key => &$value) {

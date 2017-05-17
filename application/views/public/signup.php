@@ -1,6 +1,10 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
+  if($this->input->get('msg')){
+    echo '<div id="snackbar" class="show">'  . $this->input->get('msg') .  ' </div>';
+  }
 ?>
+
 <div class="login">
 	<h2>Signup</h2>
 	<?=form_open($action,["class"=>"login-content"])?>

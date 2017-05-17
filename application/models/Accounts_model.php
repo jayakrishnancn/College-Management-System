@@ -16,7 +16,7 @@ class Accounts_model extends CI_Model {
 		
 		return substr(str_shuffle(str_repeat($x = '0123456789abcdefghijkl_mnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_', ceil($length / strlen($x)))) , 1, $length);
 	}
-	private function hashPassword($data, $salt = NULL) {
+	private function _hash_password($data, $salt = NULL) {
 		if ($salt == NULL) {
 			$salt = $this->random(12);
 		}
@@ -27,9 +27,9 @@ class Accounts_model extends CI_Model {
 		$q = $this->db->get_where($this->tables['login'], ['email' => $data['username']]);
 		if ($q->num_rows() == 1) {
 			$salt = $q->result_array() [0]['salt'];
-			$hashedPassword = $this->hashPassword($data['password'], $salt) [0];
+			$hashed_password = $this->_hash_password($data['password'], $salt) [0];
    
-			$q2 = $this->db->get_where($this->tables['login'], ['email' => $data['username'], 'password' => $hashedPassword]);
+			$q2 = $this->db->get_where($this->tables['login'], ['email' => $data['username'], 'password' => $hashed_password]);
 			if ($q2->num_rows() == 1) {
 				$this->load->library('user_agent');
 				$result2 = $q->result_array() [0];
@@ -67,11 +67,11 @@ class Accounts_model extends CI_Model {
 			
 			return false;
 		}
-		$tmpPass = $this->hashPassword($data['password']);
-		$hashedPassword = $tmpPass[0];
+		$tmpPass = $this->_hash_password($data['password']);
+		$hashed_password = $tmpPass[0];
 		$salt = $tmpPass[1];
 		
-		return $this->db->insert($this->tables['login'], ['email' => $data['username'], 'password' => $hashedPassword, 'salt' => $salt]);
+		return $this->db->insert($this->tables['login'], ['email' => $data['username'], 'password' => $hashed_password, 'salt' => $salt]);
 	}
 	public function verify_user($where) 
 	{
@@ -139,4 +139,61 @@ class Accounts_model extends CI_Model {
 		return $query->result_array();
 	}
 	
+
+	/**
+	 * Change User password
+	 * 
+	 * @param  int $uid      user id to change passowrd
+	 * @param  array $data should contain new_password, old_password, 
+	 *                         confirm_password
+	 * @return bool           true if password changed
+	 */
+	public function change_password($uid = NULL, $data = NULL)
+	{
+		if($uid == NULL || $data == NULL)
+		{
+			return FALSE;
+		}
+		if(!isset($data['new_password'],$data['confirm_password'],$data['old_password']))
+		{
+			return FALSE;
+		}
+
+		if($data['new_password'] != $data['confirm_password'])
+		{
+			return FALSE;
+		}
+
+		// for checking and getting salt form table
+		$q = $this->db->get_where('login', ['uid' =>$uid]);
+		if ($q->num_rows() != 1) 
+		{
+			return FALSE;
+		}
+
+		$login_query_result = $q->result_array()[0];
+		$salt = $login_query_result['salt'];
+		$password = $login_query_result['password'];
+
+		$hashed_password = $this->_hash_password($data['old_password'], $salt)[0];
+
+		if($hashed_password != $password)
+		{
+			return fALSE;
+		} 
+
+		// unnecessary  can be deleted
+		$q2 = $this->db->get_where('login', ['uid' => $uid, 'password' => $hashed_password]);
+
+		if($q2->num_rows() != 1)
+		{
+			return FALSE;
+		}
+		
+		
+		$new_password = $this->_hash_password($data['new_password']);
+
+		return $this->db->update('login',['password' => $new_password[0], 'salt' => $new_password[1]],['uid' =>$uid, 'password' => $login_query_result['password']]);
+
+	}
 }

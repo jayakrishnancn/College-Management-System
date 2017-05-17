@@ -157,4 +157,6 @@ class Public_model extends CI_Model {
 		return $this->db->get_where($this->tables['setup'])->result_array()[0];
 	}
  
+	// --------------------------------------------------------------------
+
 }

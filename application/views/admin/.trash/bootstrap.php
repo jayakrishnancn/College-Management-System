@@ -14,13 +14,13 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 	</head>
 	<body>
 		<?php
-			$this->view('admin/nav',$data);
+			$this->view('nav',$data);
 		?>
 		<div class="container">
 			<div class="row">
 				<div class="col-sm-3">
 					<?php
-						$this->view('admin/sidenav',$data);
+						$this->view('public/sidenav',$data);
 					?>
 				</div>
 				<div class="col-sm-9 main-contents">

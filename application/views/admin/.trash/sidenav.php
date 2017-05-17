@@ -11,6 +11,7 @@
 <ul class="list-group side-nav" >
   <li class="list-group-item heading">Settings </li>
   <a class="list-group-item" href="<?=base_url()?>admin/history">Login History</a>  
+  <a class="list-group-item" href="<?=base_url()?>admin/change_password">Change password</a>  
 </ul>
 <!--
 <a class="list-group-item" href="#demo3" data-toggle="collapse" data-parent="#MainMenu"><span class="badge"> <i class="fa fa-angle-right"></i></span>    Submenu </a>

@@ -115,7 +115,7 @@ class Accounts extends CI_Controller {
 			
 			// username and password : Required and check for min_length
 			$this->form_validation->set_rules('username', 'Username', 'trim|required|min_length[' . $this->_min_username_length . ']'); 
-			$this->form_validation->set_rules('password', 'Password', 'trim|required|min_length[' . $this->_min_password_length . ']'); 
+			$this->form_validation->set_rules('password', 'Password', 'required|min_length[' . $this->_min_password_length . ']'); 
 
 			// if the requirement are not meet redirect to login page to re-enter the login details 
 			if ($this->form_validation->run() == FALSE)
@@ -191,7 +191,7 @@ class Accounts extends CI_Controller {
 			
 			// username and password : Required and check for min_length
 			$this->form_validation->set_rules('username', 'Username', 'trim|required|min_length[' . $this->_min_username_length . ']'); 
-			$this->form_validation->set_rules('password', 'Password', 'trim|required|min_length[' . $this->_min_password_length . ']'); 
+			$this->form_validation->set_rules('password', 'Password', 'required|min_length[' . $this->_min_password_length . ']'); 
 
 			// if the requirement are not meet redirect to signup page to re-enter the signup details 
 			if ($this->form_validation->run() == FALSE)
@@ -255,7 +255,6 @@ class Accounts extends CI_Controller {
 		$msg = ($prev_msg == FALSE) ? "msg=Logout successful" : "msg=" . $prev_msg . " ";
 		redirect("accounts/login?" . $msg);
 	}
-
-
+ 
 	  
 }

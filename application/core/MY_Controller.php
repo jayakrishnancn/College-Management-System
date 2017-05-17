@@ -104,6 +104,8 @@ class MY_Controller extends CI_Controller {
 		$this->load->view('bootstrap', $data_to_pass);
 	}
 
+	// -------------------------------------------------------------------- 
+
 	/**
 	 * View History
 	 *
@@ -118,4 +120,54 @@ class MY_Controller extends CI_Controller {
 		$data['table_title'] =  "History";
 		$this->_render_view('public/table', $data);
 	}
+
+	// -------------------------------------------------------------------- 
+	
+
+	public function change_password()
+	{
+		if($post_inputs=$this->input->post())
+		{
+			$this->load->library('form_validation');
+
+			$this->form_validation->set_rules('old_password','Old password','required|min_length[' . $this->common_functions->_min_password_length . ']');
+			$this->form_validation->set_rules('new_password','Old password','required|min_length[' . $this->common_functions->_min_password_length . ']');
+			$this->form_validation->set_rules('confirm_password','Old password','required|min_length[' . $this->common_functions->_min_password_length . ']|matches[new_password]');
+
+			if($this->form_validation->run() == FALSE)
+			{
+				echo validation_errors();
+				die;
+				redirect($this->current_url . "?msg=check fields.");
+				return;
+			}
+			$this->load->model('accounts_model');
+			if($this->accounts_model->change_password($this->session_data['uid'],$post_inputs))
+			{
+				redirect("accounts/logout?msg=Password changed.Login Again");
+				return;
+			}
+				redirect($this->current_url . "?msg=Check fields and try again");
+				return;
+		}
+		$this->load->library('form_builder');
+
+		// form starts  
+		$this->form_builder->start_form(['action' => $this->current_url, 'heading' => 'Change Password']);
+
+		$this->form_builder->addlabel('Old Password');
+		$this->form_builder->addinput(['name' => 'old_password', 'placeholder' => "Old Password", 'autofocus' => true, 'type' => 'password']);
+
+		$this->form_builder->addlabel('New password');
+		$this->form_builder->addinput(['name' => 'new_password', 'placeholder' => "Password", 'type' => 'password']);
+
+		$this->form_builder->addlabel('Confirm your  password');
+		$this->form_builder->addinput(['name' => 'confirm_password', 'placeholder' => "Confirm your Password", 'type' => 'password']); 
+
+		$this->form_builder->setbutton('Change Password');
+		// form_builder ends
+
+		$this->_render_view('public/form_builder');
+	} 
+
 }

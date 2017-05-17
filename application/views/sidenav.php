@@ -1,4 +1,21 @@
 <?php 
+	if(in_array('admin',$userpermission))
+	{
+?> 
+<ul class="list-group side-nav" >
+  <li class="list-group-item heading">Admin</li>
+  <a class="list-group-item" href="<?=base_url()?>admin/manageusers">View Users</a> 
+  <a class="list-group-item" href="<?=base_url()?>admin/adduser">Add User</a>
+  <a class="list-group-item" href="<?=base_url()?>admin/manageusers">Edit User</a>
+  <a class="list-group-item" href="<?=base_url()?>admin/manageusers">Delete User</a>
+  <a class="list-group-item" href="<?=base_url()?>admin/manageusers">Reset user Password</a> 
+  <a class="list-group-item" href="<?=base_url()?>admin/adduserpermission">Add Permission</a> 
+  <a class="list-group-item" href="<?=base_url()?>admin/deleteuserpermission?delete=true">Delete Permission</a> 
+</ul> 
+<?php 
+	}
+?>
+<?php 
 	if(in_array('principal',$userpermission))
 	{
 ?> 
@@ -49,4 +66,5 @@
 <ul class="list-group side-nav" >
 	<li class="list-group-item heading">Settings </li>
 	<a class="list-group-item" href="<?=base_url($this->router->fetch_class())?>/history">Login History</a>  
+	<a class="list-group-item" href="<?=base_url($this->router->fetch_class())?>/change_password">Change password</a>  
 </ul> 

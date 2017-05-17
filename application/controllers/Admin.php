@@ -12,12 +12,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
  * @author   jayakrishnancn
  * @link  https://github.com/jayakrishnancn/College-Management-System
  */
- class Admin extends CI_Controller {
- 	/**
- 	 * Session data in array so that redudent function call can be reduced
- 	 * @var array
- 	 */
-	private $session_data = [];
+ class Admin extends MY_Controller { 
 
 	/**
 	 * min username length load from common function library
@@ -34,18 +29,11 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 	function __construct() 
 	{
 		parent::__construct();
-		
-		// load session and common function libraries
-		$this->load->library('common_functions');
-
-		// verify session user ip and cookie redirect if any of this is invalid else continue
-		$this->common_functions->verify_suci();
+		 
  
  		// verify if user has permission to this admin controller (area).
 		$this->common_functions->verify_permission('admin');
-
-		// set session data to a private variable
-		$this->session_data = $this->common_functions->session_data;
+ 
  		
 
 		$this->load->model('admin_model');
@@ -96,7 +84,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 		// filter all data 
 		// $data_to_pass = $this->security->xss_clean($data_to_pass); 
 		// load default admin/ bootstrap view  in application/view directory 
-		$this->load->view('admin/bootstrap', $data_to_pass);
+		$this->load->view('bootstrap', $data_to_pass);
 	}
 
 
@@ -179,7 +167,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 		$this->form_builder->setbutton('Add user');
 		// form_builder ends
 		
-		$this->_render_admin_view('form_builder');
+		$this->_render_admin_view('public/form_builder',NULL,false);
 	}
 
 	// --------------------------------------------------------------------
@@ -242,7 +230,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 		
 		$this->form_builder->setbutton('Add permission'); 
 
-		$this->_render_admin_view('form_builder');
+		$this->_render_admin_view('public/form_builder',NULL,false);
 	}  
 
 	// --------------------------------------------------------------------
@@ -314,7 +302,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 		
 		$this->form_builder->setbutton('Revoke permission'); 
 
-		$this->_render_admin_view('form_builder');
+		$this->_render_admin_view('public/form_builder',NULL,false);
 	}
 
 	// -------------------------------------------------------------------- 
@@ -326,7 +314,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 	public function manageusers() 
 	{ 
 		$data['table'] = $this->admin_model->get_user_with_access();
-		$this->_render_admin_view('table', $data);
+		$this->_render_admin_view('public/table', $data,false);
 	}
 
 	// --------------------------------------------------------------------
@@ -341,19 +329,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 		$data['table'] =  $this->common_functions->history();
 		$this->_render_admin_view('public/history', $data,false);
 	}
-
-	// --------------------------------------------------------------------
-	
-	/**
-	 * reset my password
-	 * 
-	 * @return void
-	 */
-	public function resetmypassword() 
-	{ 
-		$data['table'] =  $this->common_functions->resetmypassword();
-		$this->_render_admin_view('public/history', $data,false);
-	}
+ 
 
 	// 
 	// --------------------------------------------------------------------
@@ -390,7 +366,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 			$this->load->library('form_validation');
 
 			$this->form_validation->set_rules('username', 'Username', 'trim|required|min_length[' . $this->_min_username_length. ']');
-			$this->form_validation->set_rules('password', 'Password', 'trim|required|min_length[' .  $this->_min_password_length . ']');
+			$this->form_validation->set_rules('password', 'Password', 'required|min_length[' .  $this->_min_password_length . ']');
 
 			// run the form validation
 			if ($this->form_validation->run() == FALSE) 
@@ -503,7 +479,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 			$this->form_builder->addinput('oldemail', 'hidden', true, $userdata['email']);
 			$this->form_builder->setbutton('Change Details');
-			$this->_render_admin_view('form_builder');
+			$this->_render_admin_view('public/form_builder',NULL,false);
 			
 			return;
 		}

@@ -1,3 +1,12 @@
+=keyframes($name)
+	@-webkit-keyframes #{$name}
+		@content
+	@-moz-keyframes #{$name}
+		@content
+	@-ms-keyframes #{$name}
+		@content
+	@keyframes #{$name}
+		@content
 #snackbar
 	visibility: hidden
 	min-width: 250px
@@ -11,47 +20,20 @@
 	position: fixed
 	z-index: 1
 	left: 15%
-	bottom: 30px
+	bottom: -150px
+	opacity: 0
 	&.show
 		visibility: visible
-		-webkit-animation: fadein 0.5s, fadeout 0.5s 2.5s
-		animation: fadein 0.5s, fadeout 0.5s 2.5s
+		-webkit-animation: fadeinout 5s
+		animation: fadeinout 5s
 
-@-webkit-keyframes fadein
-	from
-		bottom: 0
-		opacity: 0
-
-	to
++keyframes(fadeinout)
+	0%
+		bottom: -150px
+		opacity: 0 
+	5%,70%
 		bottom: 30px
-		opacity: 1
-
-
-@keyframes fadein
-	from
-		bottom: 0
-		opacity: 0
-
-	to
-		bottom: 30px
-		opacity: 1
-
-
-@-webkit-keyframes fadeout
-	from
-		bottom: 30px
-		opacity: 1
-
-	to
-		bottom: 0
-		opacity: 0
-
-
-@keyframes fadeout
-	from
-		bottom: 30px
-		opacity: 1
-
-	to
-		bottom: 0
-		opacity: 0
+		opacity: 1 
+	100%
+		bottom: -150px
+		opacity: 0 

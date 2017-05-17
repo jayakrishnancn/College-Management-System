@@ -25,6 +25,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
  
 		// verify if user has permission to this teacher controller (area).
 		$this->common_functions->verify_permission('hod'); 
+
+		$this->load->model('teacher_model');
 	}
 
 	// --------------------------------------------------------------------
@@ -72,7 +74,55 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 	 */
 	public function addsubject()
 	{
-		$this->_render_hod_view('home');
+		if($input = $this->input->post())
+		{
+
+			$this->load->library('form_validation');
+
+			$this->form_validation->set_rules('subject_name', 'Subject Name', 'trim|required|min_length[3]');
+			// run the form validation
+			if ($this->form_validation->run() == FALSE) 
+			{
+				redirect($this->current_url.'?msg=Check all fields'); 
+				return;
+			}
+
+			if(!($my_dept = $this->teacher_model->get_dept($this->session_data['uid'])))
+			{
+				redirect($this->current_url."?msg=subject not added .No permission to do this action.");
+				return false;
+			}
+
+			if($this->teacher_model->add_subject($input['subject_name'],$my_dept['id']))
+			{
+				redirect($this->current_url."?msg=subject added.");
+				return;
+			}
+			redirect($this->current_url."?msg=subject not added. Try again.");
+			return;
+		}
+		$this->load->library('form_builder');
+		$this->form_builder->start_form(['action' =>$this->current_url,'heading' =>'Add Subject']);
+		$this->form_builder->addlabel("Add Subject");
+		$this->form_builder->addinput("subject_name");
+		$this->form_builder->setbutton("Add Subject");
+		$this->_render_hod_view('public/form_builder',false,false);
+	}
+
+	
+	// --------------------------------------------------------------------
+
+	/**
+	 * View Subject
+	 *
+	 * View subject by hod
+	 * @return void
+	 */
+	public function view_subject()
+	{  
+		$data['table'] = $this->teacher_model->get_subject();	 
+		$data['table_title'] = 'Subjects';
+		$this->_render_hod_view('public/table',$data,false);
 	}
 	
 }

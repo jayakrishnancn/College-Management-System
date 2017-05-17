@@ -36,6 +36,7 @@
 	<ul class="list-group side-nav" >
 		<li class="list-group-item heading">Hod </li>
 		<a class="list-group-item" href="<?=base_url()?>hod/addsubject">Add Subject</a>  
+		<a class="list-group-item" href="<?=base_url()?>hod/view_subject">View Subject</a>  
 	</ul>
 <?php 
 	}

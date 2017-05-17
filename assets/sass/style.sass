@@ -1,6 +1,8 @@
 
-=shadow
-	box-shadow: 2px 2px 5px #e0e0e0
+=shadow($value)
+	-webkit-box-shadow: $value
+	-moz-box-shadow: $value
+	box-shadow: $value
 
 
 /* login page */
@@ -95,9 +97,18 @@ h3
 	border-radius: 3px 
 	&.btn-long
 		padding: 6px 20px
+	outline: none
 	&.btn-default
-		background: #eff3f6
+		background: #eff3f6  
 		color: #333
+		&:focus
+			outline: none 
+			+shadow(0 0 0 0.2em rgba(3,102,214,0.3))
+		&:hover, &:active
+			background: #e6ebf1  
+		&:active
+			background: #e9ecef
+			+shadow(inset 0 0.15em 0.3em rgba(27,31,35,0.15))
 
 /* helpers */
 .width80per
@@ -117,3 +128,7 @@ h3
 		border-bottom: none
 .alert
 	font-size: 13px
+
+.form-control:focus
+	+shadow(0 0 0 0.2em rgba(3,102,214,0.3))
+	border-color: #2188ff

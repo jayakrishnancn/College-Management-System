@@ -214,4 +214,63 @@ class Teacher_model extends CI_Model {
 		return false;
 	}
 
+	// --------------------------------------------------------------------
+
+	/**
+	 * Add Subject
+	 * 
+	 * by H.O.D 
+	 */
+	public function add_subject($subject = false,$department_id = false)
+	{
+		if(!$subject || (!$department_id))
+		{
+			return FALSE;
+		}
+		if($this->db->get_where('subject',['subject_name'=>$subject, 'department_id' => $department_id])->num_rows() > 0)
+		{
+			return false;
+		}
+		return $this->db->insert('subject',['subject_name'=>$subject, 'department_id' => $department_id]);
+	}
+
+	// --------------------------------------------------------------------
+	/**
+	 * Return dept row of corresponding uid
+	 *
+	 * Assumed that 1 can not be H.O.D of more than 1 department
+	 * @param  int  	uid user id to check department
+	 * @return array      1 dept row 
+	 */
+	public function get_dept($uid)
+	{
+		// since department.hod is email not uid we have to get email from 
+		// login first cooresponding to uid
+		$query = $this->db->get_where('login',['uid'=>$uid]);
+		if($query->num_rows()!=1)
+		{
+			return FALSE;
+		}
+		$email = $query->result_array()[0]['email'];
+
+		$query_dept = $this->db->get_where('department',['hod'=>$email]);
+		if($query_dept->num_rows() != 1)
+		{
+			return FALSE;
+		}
+		return $query_dept->result_array()[0];
+
+	}
+
+	/**
+	 * Get Subject
+	 * 
+	 * Return subjects in subject table
+	 * @return array subject table row(s)
+	 */
+	public function get_subject()
+	{	 
+
+		 return $this->db->query("SELECT department_name as 'Department Name',subject_name as 'Subject Name' FROM subject, department WHERE department.id =subject.department_id")->result_array();
+	}
 }

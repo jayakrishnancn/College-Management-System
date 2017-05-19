@@ -9,7 +9,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 		<title><?=isset($data['title'])?$data['title']:""?></title>
 		<link rel="icon" href="/favicon.ico" type="image/x-icon">
-		<link rel="stylesheet" href="<?=base_url()?>assets/vendor/bootstrap.min.css"> 
+		<link rel="stylesheet" href="<?=base_url()?>assets/vendor/bootstrap/css/bootstrap.min.css"> 
 		<link rel="stylesheet" href="<?=base_url()?>assets/css/style.css">
 	</head>
 	<body>

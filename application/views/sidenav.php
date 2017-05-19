@@ -35,7 +35,7 @@
 	{
 ?> 
 	<ul class="list-group side-nav" >
-		<li class="list-group-item heading">Hod </li>
+		<li class="list-group-item heading">Hod <?php echo (isset($current_department))? "(" . $current_department . ")":"";?></li>
 		<a class="list-group-item" href="<?=base_url()?>hod/addsubject">Add Subject</a>  
 		<a class="list-group-item" href="<?=base_url()?>hod/view_subject">View Subject</a>  
 	</ul>

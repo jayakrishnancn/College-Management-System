@@ -7,33 +7,40 @@
 		@content
 	@keyframes #{$name}
 		@content
-#snackbar
-	visibility: hidden
+$bg : rgba(220,0,0,1)
+$vis_bottom : 50px
+$invis_bottom: -150px
+$vis_left : 0
+#snackbar 
 	min-width: 250px
-	margin-left: -125px
-	background-color: rgba(0,0,0,0.7)
-	border: 1px solid rgba(0,0,0,0.8)
+	max-width: 90%
+	margin-left: 0
+	background-color: $bg 
+	border: 1px solid darken($bg,10%)
 	color: #fff
 	text-align: center
 	border-radius: 3px
 	padding: 16px
 	position: fixed
 	z-index: 1
-	left: 15%
-	bottom: -150px
-	opacity: 0
-	&.show
-		visibility: visible
-		-webkit-animation: fadeinout 5s
-		animation: fadeinout 5s
+	left: 5%
+	bottom: $invis_bottom
+	opacity: 0 
+	visibility: visible
+	-webkit-animation: fadeinout 5s
+	animation: fadeinout 5s
+	box-shadow: 0 0 15px #111
 
 +keyframes(fadeinout)
 	0%
-		bottom: -150px
+		bottom: $invis_bottom
 		opacity: 0 
-	5%,70%
-		bottom: 30px
+	5%
+		bottom: $vis_bottom
+		opacity: 1
+	70%
+		bottom: $vis_bottom
 		opacity: 1 
 	100%
-		bottom: -150px
+		bottom: $invis_bottom
 		opacity: 0 

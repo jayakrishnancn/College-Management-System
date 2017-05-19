@@ -158,5 +158,15 @@ class Public_model extends CI_Model {
 	}
  
 	// --------------------------------------------------------------------
+	
+	public function user_department($u_name)
+	{
+		$q = $this->db->get_where('department',['hod' => $u_name]);
+		if($q->num_rows() == 1)
+		{
+			return $q->result_array()[0];
+		}
+		return FALSE;
+	}
 
 }

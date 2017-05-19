@@ -154,7 +154,12 @@ class Public_model extends CI_Model {
 	 */
 	public function setup_data()
 	{
-		return $this->db->get_where($this->tables['setup'])->result_array()[0];
+		$q = $this->db->get_where($this->tables['setup']);
+		if($q->num_rows() == 1)
+		{
+			return $q->result_array()[0];
+		} 
+		return FALSE;
 	}
  
 	// --------------------------------------------------------------------
@@ -169,4 +174,9 @@ class Public_model extends CI_Model {
 		return FALSE;
 	}
 
+	// --------------------------------------------------------------------
+	public function course()
+	{
+		return $this->db->get('course')->result_array();
+	}
 }

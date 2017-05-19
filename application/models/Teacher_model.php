@@ -232,6 +232,10 @@ class Teacher_model extends CI_Model {
 		{
 			$this->db->select('department_name,hod');		
 		}
+		else{
+			$this->db->select($all_fields);		
+		}
+
 		if($where)
 		{ 
 			return $this->db->get_where('department',$where)->result_array();
@@ -262,12 +266,17 @@ class Teacher_model extends CI_Model {
 
 		$this->db->query(' delete from userpermission where uid = (SELECT uid from login WHERE email = (SELECT hod from department WHERE department_name ="' . $department_name . '") ) and permissionid = (SELECT permissionid from permission WHERE groupname = "hod") '); 
 		}
+		if(!$department_id = $this->get_department(['department_name' => $department_name],'id'))
+		{
+			return FALSE;
+		}
 
 		// delete dept
 		$this->db->delete('department',['department_name' => $department_name]);
+		$this->db->delete('subject',['department_id' => $department_id[0]['id']]);
  
 		 $this->db->trans_complete(); 
-
+		 
 		 return $this->db->trans_status();  
 	}
 	
@@ -316,17 +325,18 @@ class Teacher_model extends CI_Model {
 	 * 
 	 * by H.O.D 
 	 */
-	public function add_subject($subject = false,$department_id = false)
+	public function add_subject($subject = FALSE, $course_name = FALSE, $department_id = FALSE)
 	{
-		if(!$subject || (!$department_id))
+		if(!($subject && $department_id && $course_name))
 		{
 			return FALSE;
 		}
-		if($this->db->get_where('subject',['subject_name'=>$subject, 'department_id' => $department_id])->num_rows() > 0)
+
+		if($this->db->get_where('subject',['subject_name'=>$subject, 'course_name' => $course_name,'department_id' => $department_id])->num_rows() > 0)
 		{
-			return false;
+			return FALSE;
 		}
-		return $this->db->insert('subject',['subject_name'=>$subject, 'department_id' => $department_id]);
+		return $this->db->insert('subject',['subject_name'=>$subject, 'course_name' => $course_name, 'department_id' => $department_id]);
 	}
 
 	// --------------------------------------------------------------------
@@ -366,6 +376,6 @@ class Teacher_model extends CI_Model {
 	public function get_subject()
 	{	 
 
-		 return $this->db->query("SELECT department_name as 'Department Name',subject_name as 'Subject Name' FROM subject, department WHERE department.id =subject.department_id")->result_array();
+		return $this->db->query("SELECT subject_name as 'Subject Name', department_name as 'Department Name',course_name as 'Course Name' FROM subject,  department WHERE department.id =subject.department_id")->result_array(); 
 	}
 }

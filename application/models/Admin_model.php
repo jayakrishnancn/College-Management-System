@@ -117,8 +117,10 @@ class Admin_model extends CI_Model {
 				$value['access']=array_column($x,'groupname');
 			}
 		}
+		/*
 		if($query->num_rows()==1)
 			return $result[0];
+		*/
 		return $result;
 	}
 	public function add_user_permission($data)

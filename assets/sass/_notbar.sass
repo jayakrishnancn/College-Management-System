@@ -1,3 +1,9 @@
+
+=shadow($value)
+	-webkit-box-shadow: $value
+	-moz-box-shadow: $value
+	box-shadow: $value
+
 =keyframes($name)
 	@-webkit-keyframes #{$name}
 		@content
@@ -7,7 +13,7 @@
 		@content
 	@keyframes #{$name}
 		@content
-$bg : rgba(220,0,0,1)
+$bg : #cb2431
 $vis_bottom : 50px
 $invis_bottom: -150px
 $vis_left : 0
@@ -29,7 +35,7 @@ $vis_left : 0
 	visibility: visible
 	-webkit-animation: fadeinout 5s
 	animation: fadeinout 5s
-	box-shadow: 0 0 15px #111
+	+shadow(0 0 15px #777)
 
 +keyframes(fadeinout)
 	0%

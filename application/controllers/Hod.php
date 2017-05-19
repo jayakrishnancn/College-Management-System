@@ -80,6 +80,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 			$this->load->library('form_validation');
 
 			$this->form_validation->set_rules('subject_name', 'Subject Name', 'trim|required|min_length[3]');
+			$this->form_validation->set_rules('course_name', 'Course Name', 'trim|required|min_length[3]');
 			// run the form validation
 			if ($this->form_validation->run() == FALSE) 
 			{
@@ -87,13 +88,13 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 				return;
 			}
 
-			if(!($my_dept = $this->teacher_model->get_dept($this->session_data['uid'])))
+			if(!($my_dept = $this->teacher_model->get_dept_by_uid($this->session_data['uid'])))
 			{
 				redirect($this->current_url."?msg=subject not added .No permission to do this action.");
 				return false;
 			}
 
-			if($this->teacher_model->add_subject($input['subject_name'],$my_dept['id']))
+			if($this->teacher_model->add_subject($input['subject_name'], $input['course_name'], $my_dept['id']))
 			{
 				redirect($this->current_url."?msg=subject added.");
 				return;
@@ -105,6 +106,14 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 		$this->form_builder->start_form(['action' =>$this->current_url,'heading' =>'Add Subject']);
 		$this->form_builder->addlabel("Add Subject");
 		$this->form_builder->addinput("subject_name");
+		
+		$this->form_builder->addlabel("Course");
+		$this->form_builder->startdropdown("course_name");
+		foreach ($this->public_model->course() as $key => $value) {
+			$this->form_builder->dropdownoption($value['course_name']);
+		}
+		$this->form_builder->enddropdown();
+		
 		$this->form_builder->setbutton("Add Subject");
 		$this->_render_hod_view('public/form_builder',false,false);
 	}

@@ -50,6 +50,36 @@ class Teacher_model extends CI_Model {
 		return false;
 	}
 
+// --------------------------------------------------------------------
+
+	/**
+	 * Get permission
+	 *
+	 * This returns array of permission table
+	 * @param  int/string $groupname_or_id should be supplied to function 
+	 * @param  bool  	$prio if column is prio or not in permission table
+	 *   
+	 * @return array 
+	 */
+	public function get_permission($groupname_or_id = FALSE, $prio = FALSE)
+	{
+		if(!$groupname_or_id)
+		{
+			return FALSE;
+		}
+  
+		$column_name = ($prio == TRUE)?'prio' : is_numeric($groupname_or_id)? 'permissionid' : 'groupname';	
+
+		$q = $this->db->get_where('permission',[$column_name => $groupname_or_id]);
+
+		if($q->num_rows()==1)
+		{
+			return $q->result_array()[0];			
+		}
+		return FALSE;
+	
+	}
+
 	/* ***************************************************
 	 *   Course details
 	/****************************************************
@@ -143,17 +173,68 @@ class Teacher_model extends CI_Model {
 	}
 
 	// --------------------------------------------------------------------
+
+	/**
+	 * Change H.O.D 
+	 *
+	 * change hod of department .Set permission to new hod, revoke permission for old hod.
+	 * @param  string  $dept   department name
+	 * @param  string/int  $hod_id hod_id
+	 * @param  boolean $id     if hod_id is id or hod_name
+	 * 
+	 * @return bool
+	 */
+	public function change_hod($dept,$hod_id,$id = TRUE)
+	{
+		// continue only if 1 user selected correspoinding to hod_id
+		if(!$new_hod_details = $this->get_user(['uid' => $hod_id]))
+		{
+			return FALSE;
+		} 
+		$old_hod = $this->get_department(['department_name' => $dept])[0]['hod'];
+		
+		// continue only if 1 user selected correspoinding to hod_id
+		if(!$old_hod_details = $this->get_user(['email' => $old_hod]))
+		{ 
+			return FALSE;
+		} 
+
+		$groupname = $this->user_groups($hod_id);
+		$hod_permission_id = $this->get_permission('hod')['permissionid'];
+		
+		// we have to change hod only if new user is not hod  
+		if((!$groupname) || (!in_array('hod',$groupname)))
+		{ 	
+			$this->db->trans_start();
+
+			$this->db->update('userpermission',['uid' => $hod_id],['uid' => $old_hod_details['uid'], 'permissionid' => $hod_permission_id]);
+			$this->db->update('department',['hod' => $new_hod_details['email']],['department_name' => $dept]);
+
+			 $this->db->trans_complete(); 
+			 return $this->db->trans_status();  
+		}
+
+	 	return FALSE;
+ 
+	}
+	// --------------------------------------------------------------------
 	
 	/**
 	 * Get Department Details 
 	 * 
 	 * @return array 	return department name in department table
 	 */
-	public function get_department($all_fields = false)
+	public function get_department($where = false, $all_fields = FALSE)
 	{ 
+	
+
 		if(!$all_fields)
 		{
 			$this->db->select('department_name,hod');		
+		}
+		if($where)
+		{ 
+			return $this->db->get_where('department',$where)->result_array();
 		}
 		return $this->db->get('department')->result_array();
 	}
@@ -166,11 +247,11 @@ class Teacher_model extends CI_Model {
 	 * delete department from department table
 	 * @return bool if success
 	 */
-	public function delete_department($department_name = false)
+	public function delete_department($department_name = FALSE)
 	{ 
 		if(!$department_name)
 		{
-			return false;
+			return FALSE;
 		}
 
 		$this->db->trans_start();
@@ -200,7 +281,7 @@ class Teacher_model extends CI_Model {
 	 */
 	public function get_user($where = false)
 	{
-		$this->db->select("uid,email");
+		$this->db->select("uid,email,name");
 		if(!$where)
 		{
 			return $this->db->get_where('login')->result_array();
@@ -214,6 +295,20 @@ class Teacher_model extends CI_Model {
 		return false;
 	}
 
+	// --------------------------------------------------------------------
+	 
+	/**
+	 * get user not hod
+	 * Ger User who are not hod's
+	 * @param  array $where [description]
+	 * 
+	 * @return array  	of users who are not hod's
+	 */
+	public function get_user_but_not_hod($where = false)
+	{
+
+		return $this->db->query("select uid,email,name from login where email not in (SELECT hod from department) ")->result_array();
+	}
 	// --------------------------------------------------------------------
 
 	/**
@@ -242,7 +337,7 @@ class Teacher_model extends CI_Model {
 	 * @param  int  	uid user id to check department
 	 * @return array      1 dept row 
 	 */
-	public function get_dept($uid)
+	public function get_dept_by_uid($uid)
 	{
 		// since department.hod is email not uid we have to get email from 
 		// login first cooresponding to uid

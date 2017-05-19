@@ -17,9 +17,12 @@ class Form_builder{
 		$this->CI->load->helper('form');
 	} 
 
-	public function start_form($param)
+	public function start_form($param = NULL)
 	{
-
+		if(!isset($param['action']))
+		{
+			$param['action'] = $this->CI->router->class . "/" . $this->CI->router->method;
+		}
 		$this->form['action']=$param['action'];
 		$this->form['attributes']['method']=isset($param['method']) ?$param['method']: "post";
 		$this->form['attributes']['accept-charset']=isset($param['accept-charset']) ?$param['accept-charset']: "utf-8";
@@ -109,6 +112,20 @@ class Form_builder{
 
 		$CI = &get_instance();
 		$CI->load->view($this->formviewlocation,$this->form);
+	}
+
+	public function set_cancel_button($value = 'Cancel',$route_to = NULL,$relative = TRUE)
+	{
+		if($relative)
+		{
+			$route_to = base_url($route_to);
+		}
+		if($route_to == NULL)
+		{
+			$route_to = $this->CI->router->class;
+		}
+		$this->form['cancel_button']['value']=$value;
+		$this->form['cancel_button']['href']=$route_to; 
 	}
 
 }

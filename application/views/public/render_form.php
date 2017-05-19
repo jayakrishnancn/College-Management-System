@@ -10,9 +10,9 @@ if(isset($heading)  && $heading!=NULL)
 		{ 
 			echo  '<p>' . $desc . '</p>';
 		}
+		echo '<hr/>';
  
 		}
-		echo '<hr/>';
 
 
 		$labelflag=false;
@@ -67,6 +67,10 @@ if(isset($heading)  && $heading!=NULL)
 
 
 		?>
-		<button class="btn btn-default  btn-sm <?php echo isset($button['class'])?$button['class']:"";?>"  ><?=(isset($button['value'])?$button['value']:"Submit")?></button>
+		<?php if(isset($cancel_button)):?>
+		<a href="<?php echo $cancel_button['href'];?>" class="btn btn-default  btn-sm"><?php echo $cancel_button['value'];?></a>
+		<?php endif;?>
+		 
+		<button class="btn btn-danger  btn-sm <?php echo isset($button['class'])?$button['class']:"";?>"  ><?=(isset($button['value'])?$button['value']:"Submit")?></button> 
 	</form> 
 </div>

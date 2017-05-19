@@ -123,7 +123,13 @@ class MY_Controller extends CI_Controller {
 
 	// -------------------------------------------------------------------- 
 	
-
+	/**
+	 * Change Password
+	 * 
+	 * Change password of any user
+	 * 
+	 * @return void
+	 */
 	public function change_password()
 	{
 		if($post_inputs=$this->input->post())
@@ -169,5 +175,5 @@ class MY_Controller extends CI_Controller {
 
 		$this->_render_view('public/form_builder');
 	} 
-
+ 
 }

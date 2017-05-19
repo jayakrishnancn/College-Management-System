@@ -267,18 +267,87 @@ class Principal extends MY_Controller {
 				{
 					redirect($this->router->class . '/view_departments?msg=Department Deleted');
 					return;
-				}
-
+				} 
 				redirect($this->router->class . '/view_departments?msg=can\'t delete Department. Try Again');
 				return;
 			}
 			redirect($this->router->class . '/view_departments?msg=insufficient Inputs. Try Again');
 			return;
-		}
-
+		} 
 			redirect($this->router->class . '/view_departments?msg=Invalid input. Try Again');
 			return;
 
 	}
 
+
+	// --------------------------------------------------------------------
+	
+	/**
+	 * Change  Department hod
+	 *
+	 * This will Change hod of any department
+	 * 
+	 * @return void
+	 */
+	public function change_hod()
+	{
+		if($input = $this->input->post())
+		{
+
+			// validate the username and password
+			$this->load->library('form_validation');
+			
+			// username and password : Required and check for min_length
+			$this->form_validation->set_rules('department', 'Department Name', 'trim|required|min_length[4]'); 
+			$this->form_validation->set_rules('hod_id', 'HOD ID', 'required|min_length[1]'); 
+
+			// if the requirement are not meet redirect to signup page to re-enter the signup details 
+			if ($this->form_validation->run() == FALSE)
+			{ 
+				die(validation_errors());
+				redirect($this->current_url . '?msg=insufficient Inputs. Try Again');
+				return;
+			}
+
+			if($this->teacher_model->change_hod($input['department'],$input['hod_id']))
+			{
+				redirect($this->current_url.'?msg=Hod changed.');
+				return;
+			} 
+			redirect($this->current_url.'?msg=Cant Change HOD .Contact admin');
+			return;
+		}
+
+		$this->load->library('form_builder');
+		$this->form_builder->start_form(['heading' => 'change Head of department']);
+	
+		$this->form_builder->addlabel('department');
+		$this->form_builder->startdropdown('department');
+
+		$departments = $this->teacher_model->get_department();
+
+		if(!$departments)
+		{
+			redirect($this->router->class . "/add_department?msg=add department first");
+			return FALSE;
+		}
+
+
+		foreach ($departments as $key => $value) 
+		{
+			$this->form_builder->dropdownoption($value['department_name']);
+		}		
+		$this->form_builder->enddropdown();
+	
+		$this->form_builder->addlabel('staff name');
+		$this->form_builder->startdropdown('hod_id');
+		foreach ($this->teacher_model->get_user_but_not_hod() as $key => $value) 
+		{
+			$this->form_builder->dropdownoption($value['email'],$value['uid']);
+		}
+		$this->form_builder->enddropdown();
+
+		$this->form_builder->set_cancel_button();
+		$this->_render_principal_view('public/form_builder',false,false);
+	}
 }

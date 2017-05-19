@@ -84,22 +84,28 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 			// run the form validation
 			if ($this->form_validation->run() == FALSE) 
 			{
-				redirect($this->current_url.'?msg=Check all fields'); 
+				$this->session->set_flashdata('msg','Check all fields');
+				redirect($this->current_url); 
 				return;
 			}
 
 			if(!($my_dept = $this->teacher_model->get_dept_by_uid($this->session_data['uid'])))
 			{
-				redirect($this->current_url."?msg=subject not added .No permission to do this action.");
+				$this->session->set_flashdata('msg','subject not added .No permission to do this action.');
+				redirect($this->current_url);
 				return false;
 			}
 
 			if($this->teacher_model->add_subject($input['subject_name'], $input['course_name'], $my_dept['id']))
 			{
-				redirect($this->current_url."?msg=subject added.");
+
+				$this->session->set_flashdata('msg','Subject added');
+				redirect($this->current_url);
 				return;
 			}
-			redirect($this->current_url."?msg=subject not added. Try again.");
+
+			$this->session->set_flashdata('msg','Subject not added. Try again');
+			redirect($this->current_url);
 			return;
 		}
 		$this->load->library('form_builder');

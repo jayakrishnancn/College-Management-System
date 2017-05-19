@@ -1,7 +1,7 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
-  if($this->input->get('msg')){
-    echo '<div id="snackbar" class="show">'  . $this->input->get('msg') .  ' </div>';
+  if(isset($msg)){
+    echo '<div id="snackbar" class="show">'  . $msg .  ' </div>';
   }
 ?>
 

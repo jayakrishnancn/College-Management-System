@@ -85,14 +85,18 @@ class Principal extends MY_Controller {
 			{
 				if($this->teacher_model->add_course($course_name))
 				{
-					redirect($this->current_url . '?msg=Course Created');
+					$this->session->set_flashdata('msg','Course created');
+					redirect($this->current_url );
 					return;
 				}
 
-				redirect($this->current_url . '?msg=can\'t Create Course. Try Again');
+				$this->session->set_flashdata('msg','Cant create course. Try again later');
+				redirect($this->current_url);
 				return;
 			}
-			redirect($this->current_url . '?msg=insufficient Inputs. Try Again');
+
+				$this->session->set_flashdata('msg','insufficient Inputs.Try again');
+			redirect($this->current_url);
 			return;
 		}
 
@@ -147,18 +151,23 @@ class Principal extends MY_Controller {
 			{
 				if($this->teacher_model->delete_course($course_name))
 				{
-					redirect($this->router->class . '/view_courses?msg=Course Deleted');
+
+					$this->session->set_flashdata('msg','Course Deleted');
+					redirect($this->router->class . '/view_courses');
 					return;
 				}
 
-				redirect($this->router->class . '/view_courses?msg=can\'t delete Course. Try Again');
+				$this->session->set_flashdata('msg','can\'t delete Course. Try Again');
+				redirect($this->router->class . '/view_courses');
 				return;
 			}
-			redirect($this->router->class . '/view_courses?msg=insufficient Inputs. Try Again');
+			$this->session->set_flashdata('msg','insufficient Inputs. Try Again');
+			redirect($this->router->class . '/view_courses');
 			return;
 		}
 
-			redirect($this->router->class . '/view_courses?msg=Invalid input. Try Again');
+			$this->session->set_flashdata('msg','Invalid input. Try Again');
+			redirect($this->router->class . '/view_courses');
 			return;
 
 	}
@@ -187,17 +196,21 @@ class Principal extends MY_Controller {
 			// if the requirement are not meet redirect to signup page to re-enter the signup details 
 			if ($this->form_validation->run() == FALSE)
 			{ 
-				redirect($this->current_url . '?msg=insufficient Inputs. Try Again');
+
+				$this->session->set_flashdata('msg','Insufficient Inputs. Try Again');
+				redirect($this->current_url);
 				return;
 			}
 
 			if($this->teacher_model->add_department($inputs['department_name'],$inputs['hod_name']))
 			{
-				redirect($this->current_url . '?msg=Department Created');
+				$this->session->set_flashdata('msg','Department created');
+				redirect($this->current_url);
 				return;
 			}
 
-			redirect($this->current_url . '?msg=can\'t Create Department. Try Again');
+			$this->session->set_flashdata('msg','Cant create department. Try again');
+			redirect($this->current_url);
 			return;
 			
 		}
@@ -265,16 +278,23 @@ class Principal extends MY_Controller {
 			{
 				if($this->teacher_model->delete_department($department_name))
 				{
-					redirect($this->router->class . '/view_departments?msg=Department Deleted');
+
+					$this->session->set_flashdata('msg','Department deleted');
+					redirect($this->router->class . '/view_departments');
 					return;
 				} 
-				redirect($this->router->class . '/view_departments?msg=can\'t delete Department. Try Again');
+
+				$this->session->set_flashdata('msg','cant delete department. Try again');
+				redirect($this->router->class . '/view_departments');
 				return;
 			}
-			redirect($this->router->class . '/view_departments?msg=insufficient Inputs. Try Again');
+
+			$this->session->set_flashdata('msg','Insufficient Inputs. Try again');
+			redirect($this->router->class . '/view_departments');
 			return;
 		} 
-			redirect($this->router->class . '/view_departments?msg=Invalid input. Try Again');
+				$this->session->set_flashdata('msg','Invalid inputs. Try Again');
+			redirect($this->router->class . '/view_departments');
 			return;
 
 	}
@@ -303,36 +323,45 @@ class Principal extends MY_Controller {
 
 			// if the requirement are not meet redirect to signup page to re-enter the signup details 
 			if ($this->form_validation->run() == FALSE)
-			{ 
-				die(validation_errors());
-				redirect($this->current_url . '?msg=insufficient Inputs. Try Again');
+			{  
+				$this->session->set_flashdata('msg','Insufficient inputs. Try again');
+				redirect($this->current_url);
 				return;
 			}
 
 			if($this->teacher_model->change_hod($input['department'],$input['hod_id']))
 			{
-				redirect($this->current_url.'?msg=Hod changed.');
+				$this->session->set_flashdata('msg','HOD created');
+				redirect($this->current_url);
 				return;
 			} 
-			redirect($this->current_url.'?msg=Cant Change HOD .Contact admin');
+			$this->session->set_flashdata('msg','Cant change HOD. Contact admin');
+			redirect($this->current_url);
 			return;
+		}
+
+
+		$departments = $this->teacher_model->get_department();
+		if(!$departments)
+		{
+		$this->session->set_flashdata('msg','add department first');
+			redirect($this->router->class . "/add_department");
+			return FALSE;
+		}
+
+		$staff =$this->teacher_model->get_user_but_not_hod();
+		if(!$staff)
+		{
+			$this->session->set_flashdata('msg','No staffs found. Add staff and try again');
+			redirect('principal/add_staff');
+			return FALSE;
 		}
 
 		$this->load->library('form_builder');
 		$this->form_builder->start_form(['heading' => 'change Head of department']);
-	
+
 		$this->form_builder->addlabel('department');
 		$this->form_builder->startdropdown('department');
-
-		$departments = $this->teacher_model->get_department();
-
-		if(!$departments)
-		{
-			redirect($this->router->class . "/add_department?msg=add department first");
-			return FALSE;
-		}
-
-
 		foreach ($departments as $key => $value) 
 		{
 			$this->form_builder->dropdownoption($value['department_name']);
@@ -341,13 +370,78 @@ class Principal extends MY_Controller {
 	
 		$this->form_builder->addlabel('staff name');
 		$this->form_builder->startdropdown('hod_id');
-		foreach ($this->teacher_model->get_user_but_not_hod() as $key => $value) 
+
+
+		foreach ($staff as $key => $value) 
 		{
 			$this->form_builder->dropdownoption($value['email'],$value['uid']);
 		}
 		$this->form_builder->enddropdown();
 
 		$this->form_builder->set_cancel_button();
+		$this->_render_principal_view('public/form_builder',false,false);
+	}
+
+	//---------------------------------------------------------------------
+
+	/**
+	 * Add Staff
+	 * 
+	 *  @return void
+	 */
+	public function add_staff()
+	{
+		if($input = $this->input->post())
+		{
+
+			// validate the username and password
+			$this->load->library('form_validation');
+			
+			// username and password : Required and check for min_length
+			$this->form_validation->set_rules('email', 'E-mail', 'trim|required|min_length[4]|valid_email');
+			$this->form_validation->set_rules('department', 'Department Name', 'trim|required|min_length[4]');
+			$this->form_validation->set_rules('username', 'username', 'trim|required|min_length[4]'); 
+
+			// if the requirement are not meet redirect to signup page to re-enter the signup details 
+			if ($this->form_validation->run() == FALSE)
+			{ 
+				$this->session->set_flashdata('msg','Insufficient inputs. Try again.');
+				redirect($this->current_url);
+				return;
+			}
+			if($this->teacher_model->add_new_user($input))
+			{
+				$this->session->set_flashdata('msg','New user added.');
+				redirect($this->current_url);
+				return FALSE;
+			}
+			$this->session->set_flashdata('msg','user not added. Try again.');
+			redirect($this->current_url);
+			return FALSE;
+		}
+		$this->load->library('form_builder');
+		$this->form_builder->start_form(['heading' => 'Add  Staff']);
+	
+		$this->form_builder->addlabel('Name');
+		$this->form_builder->addinput('username');
+		$this->form_builder->addlabel('E-mail');
+		$this->form_builder->addinput('email');
+		$this->form_builder->addlabel('department');
+		$this->form_builder->startdropdown('department');	
+
+		$departments = $this->teacher_model->get_department();
+		if(!$departments)
+		{
+			$this->session->set_flashdata('msg','Add department first.');
+			redirect($this->router->class . "/add_department");
+			return FALSE;
+		}
+		foreach ($departments as $key => $value) 
+		{
+			$this->form_builder->dropdownoption($value['department_name']);
+		}		
+		$this->form_builder->enddropdown();
+		$this->form_builder->setbutton('Add Staff');
 		$this->_render_principal_view('public/form_builder',false,false);
 	}
 }

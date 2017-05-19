@@ -99,7 +99,8 @@ class MY_Controller extends CI_Controller {
 		// To display in navbar
 		$data_to_pass['userpermission'] = $this->public_model->user_groups($this->session_data['uid']);
 		$data_to_pass['current_department'] =$this->public_model->user_department($this->session_data['email'])['department_name'];
-
+		// for toast notification message
+		$data_to_pass['msg'] = $this->session->flashdata('msg');
 		// filter all data  
 		// load default teacher bootstrap view	in application/view directory 
 		$this->load->view('bootstrap', $data_to_pass);

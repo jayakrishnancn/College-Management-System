@@ -60,7 +60,10 @@ class Accounts extends CI_Controller {
 
 		// if $default_directory is true render from view/public directory  
 		$data_to_pass['page'] = ($default_directory === true) ?  'public/' . $page:$page;
- 
+
+		// for notification message
+		$this->load->library('session');
+ 		$data_to_pass['msg'] = $this->session->flashdata('msg');
 		$this->load->view('public/bootstrap', $data_to_pass);
 	}
 
@@ -120,7 +123,8 @@ class Accounts extends CI_Controller {
 			// if the requirement are not meet redirect to login page to re-enter the login details 
 			if ($this->form_validation->run() == FALSE)
 			{
-				redirect('accounts/login?msg=Incorrect username or password');	
+				$this->session->set_flashdata('msg', 'Incorrect username or password');
+				redirect('accounts/login');	
 				return;
 			}
 
@@ -137,13 +141,15 @@ class Accounts extends CI_Controller {
 			{ 
 				// session library already loaded. so dont have to load again
 				$this->session->set_userdata($user_login_details);
-				redirect('user?msg=Login successful');
+				$this->session->set_flashdata('msg', 'Login successful');
+				redirect('user');
 				return;
 			} 
 			else 
 			{
 				// login failed . redirect to try again
-				redirect('accounts/login?msg=Invalid username or password ');	
+				$this->session->set_flashdata('msg', 'Invalid username or password');
+				redirect('accounts/login');	
 				return;
 			} 
 		}
@@ -196,7 +202,9 @@ class Accounts extends CI_Controller {
 			// if the requirement are not meet redirect to signup page to re-enter the signup details 
 			if ($this->form_validation->run() == FALSE)
 			{
-				redirect('accounts/signup?msg=Check all input fields and try again.');	
+
+				$this->session->set_flashdata('msg', 'Check all input fields and try again.');
+				redirect('accounts/signup');	
 				return;
 			}
 
@@ -209,10 +217,12 @@ class Accounts extends CI_Controller {
 			// if not redirect to signup page to re-enter details. 
 			if ($this->accounts_model->signup($signup_details)) 
 			{
-				redirect('accounts/login?msg=Account created login to continue');
+				$this->session->set_flashdata('msg', 'Account created login to continue');
+				redirect('accounts/login');
 				return;
 			}  
-			redirect('accounts/signup?msg=Some error occured. Try again');
+				$this->session->set_flashdata('msg', 'Some error occured. Try again');
+			redirect('accounts/signup');
 			return; 
 		}
 
@@ -236,24 +246,26 @@ class Accounts extends CI_Controller {
 	 */
 	public function logout() 
 	{
+
 		// load session library to  
 		$this->load->library('session');
-		$user_data = $this->session->all_userdata();
+
+		// if message passed through get('msg') it has to pass to login page
+		$prev_msg = (($this->session->flashdata('msg') == FALSE) ? FALSE : $this->session->flashdata('msg'));
+		$user_data = $this->session->userdata();
 
 		// unset data if array key is not  session_id or ip_address  or user_agent
 		foreach ($user_data as $key => $value) {
 				$this->session->unset_userdata($key);
 		}
 
-		// distroy session 
-		$this->session->sess_destroy();
-		
-		// if message passed through get('msg') it has to pass to login page
-		$prev_msg = (($this->input->get('msg') == FALSE) ? FALSE : $this->input->get('msg'));
+		$this->session->sess_destroy(); 
  
 		// append ' logout successful ' message  to previous message and redirect to login page 
-		$msg = ($prev_msg == FALSE) ? "msg=Logout successful" : "msg=" . $prev_msg . " ";
-		redirect("accounts/login?" . $msg);
+		$msg = ($prev_msg != FALSE) ? $prev_msg : "Logout successful" ;
+
+		// distroy session 
+		redirect("accounts/login?msg=" . $msg. ",Logout successful");
 	}
  
 	  

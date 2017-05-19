@@ -1,38 +1,12 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class Admin_model extends CI_Model {
-
-	private $tables = array(
-			'login' => 'login',
-			'userpermission' => 'userpermission',
-			'permission' => 'permission',
-			'setup' => 'setup',
-			'history' => 'history'
-		);
-
-
+class Admin_model extends MY_Model {
+ 
 	function __construct() {
 	
-		parent::__construct();
-		$this->load->database();
+		parent::__construct(); 
 	
-	}
-
-	private function _random($length = 10) {
-		
-		return substr(str_shuffle(str_repeat($x = '0123456789abcdefghijkl_mnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_', ceil($length / strlen($x)))) , 1, $length);
-
-	}
-
-
-	private function _hashPassword($data, $salt = NULL) {
-
-		if ($salt == NULL) {
-			$salt = $this->_random(12);
-		}
-		
-		return [sha1($salt . $data) , $salt];
 	}
 
  

@@ -1,17 +1,9 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class Public_model extends CI_Model {
+class Public_model extends MY_Model {
 
-	private $tables = array(
-			'login' => 'login',
-			'userpermission' => 'userpermission',
-			'permission' => 'permission',
-			'setup' => 'setup',
-			'history' => 'history'
-		);
-
-
+ 
 	function __construct() {
 	
 		parent::__construct();

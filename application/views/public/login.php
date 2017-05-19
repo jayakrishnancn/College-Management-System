@@ -2,12 +2,17 @@
 defined('BASEPATH') OR exit('No direct script access allowed');
 ?>
 <div class="login">
-	<h2>Login</h2>
+	<h2>Login </h2>
 	<?php 
-  if($this->input->get('msg')):?>
-  <div class="alert alert-danger" id="alert_not" role="alert"><button type="button" class="close" data-dismiss="alert" aria-label="Close" onclick="document.getElementById('alert_not').style.display='none'"><span aria-hidden="true">&times;</span></button> <?php echo  $this->input->get('msg') ?> </div>
+		if(isset($_GET['msg']))	
+		{
+			$msg =htmlentities($this->input->get('msg'));
+		}
+		if(isset($msg)){
+		echo '<div class="alert alert-danger">'  . $msg	 .  ' </div>';
+		}
+	?>
   
-<?php   endif; ?>
 	<?=form_open($action,["class"=>"login-content"])?>
 		<div class="form-group">
 		</div>

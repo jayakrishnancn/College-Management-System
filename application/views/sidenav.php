@@ -10,7 +10,7 @@
   <a class="list-group-item" href="<?=base_url()?>admin/manageusers">Delete User</a>
   <a class="list-group-item" href="<?=base_url()?>admin/manageusers">Reset user Password</a> 
   <a class="list-group-item" href="<?=base_url()?>admin/adduserpermission">Add Permission</a> 
-  <a class="list-group-item" href="<?=base_url()?>admin/deleteuserpermission?delete=true">Delete Permission</a> 
+  <a class="list-group-item" href="<?=base_url()?>admin/deleteuserpermission">Delete Permission</a> 
 </ul> 
 <?php 
 	}
@@ -26,6 +26,7 @@
 		<a class="list-group-item" href="<?=base_url()?>principal/add_department">Add Department</a>  
 		<a class="list-group-item" href="<?=base_url()?>principal/view_departments">View Department</a>  
 		<a class="list-group-item" href="<?=base_url()?>principal/change_hod">Change Department HOD</a>  
+		<a class="list-group-item" href="<?=base_url()?>principal/add_staff">Add Staff</a>  
 	</ul>
 <?php 
 	}

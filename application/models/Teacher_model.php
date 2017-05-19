@@ -9,7 +9,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
  * @author	jayakrishnancn
  * @link		https://github.com/jayakrishnancn/College-Management-System
  */ 
-class Teacher_model extends CI_Model {
+class Teacher_model extends MY_Model {
 
 	/**
 	 * Teacher model Constructor
@@ -377,5 +377,34 @@ class Teacher_model extends CI_Model {
 	{	 
 
 		return $this->db->query("SELECT subject_name as 'Subject Name', department_name as 'Department Name',course_name as 'Course Name' FROM subject,  department WHERE department.id =subject.department_id")->result_array(); 
+	}
+
+	//----------------------------------------------------------
+	
+	public function add_new_user($data)
+	{
+		if(!isset($data['email'],$data['department'],$data['username']))
+		{
+			return FALSE;
+		}
+		$pass = $this->_hashPassword($data['email']);
+		$values = array(
+			'email' => $data['email'] ,
+			'name' => $data['username'],
+			'password' =>$pass[0],
+			'salt' => $pass[1]
+			);
+		
+		$q = $this->db->get_where('login',['email' => $data['email']]);
+
+		if($q->num_rows() > 0)
+		{
+			return FALSE;
+		}
+		$this->db->trans_start();
+			$this->db->insert('login',$values);
+			$this->db->insert('userpermission',['uid' =>$this->db->insert_id(), 'permissionid' => $this->get_permission('teacher')['permissionid'] ]);
+		$this->db->trans_complete();
+		return $this->db->trans_status();
 	}
 }

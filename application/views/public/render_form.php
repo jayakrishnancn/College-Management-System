@@ -71,6 +71,6 @@ if(isset($heading)  && $heading!=NULL)
 		<a href="<?php echo $cancel_button['href'];?>" class="btn btn-default  btn-sm"><?php echo $cancel_button['value'];?></a>
 		<?php endif;?>
 		 
-		<button class="btn btn-danger  btn-sm <?php echo isset($button['class'])?$button['class']:"";?>"  ><?=(isset($button['value'])?$button['value']:"Submit")?></button> 
+		<button class="btn <?php if(isset($cancel_button)){echo 'btn-danger';}else{echo 'btn-default';}?>  btn-sm <?php echo isset($button['class'])?$button['class']:"";?>"  ><?=(isset($button['value'])?$button['value']:"Submit")?></button> 
 	</form> 
 </div>

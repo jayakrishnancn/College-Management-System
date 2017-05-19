@@ -81,8 +81,10 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 		// To display in navbar
 		$data_to_pass['userpermission'] = $this->public_model->user_groups($this->session_data['uid']);
-		// filter all data 
-		// $data_to_pass = $this->security->xss_clean($data_to_pass); 
+		// for toast notification message
+		$data_to_pass['msg'] = $this->session->flashdata('msg');
+		
+		// filter all data  
 		// load default admin/ bootstrap view  in application/view directory 
 		$this->load->view('bootstrap', $data_to_pass);
 	}
@@ -125,7 +127,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 			// run the form validation
 			if ($this->form_validation->run() == FALSE) 
 			{
-				redirect('admin/adduser?msg=Check all fields'); 
+				$this->session->set_flashdata('msg','Check all fields');
+				redirect('admin/adduser'); 
 				return;
 			}
 
@@ -138,11 +141,12 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 			// return true if insertion successful  
 			if ($this->admin_model->add_user($userdata)) 
 			{ 
-				redirect('admin/adduser?msg=User added');
+				$this->session->set_flashdata('msg','User added');
+				redirect('admin/adduser');
 				return;
 			} 
-
-			redirect('admin/adduser?msg=Couldn\'t add User. Try again');
+			$this->session->set_flashdata('msg','Couldn\'t add User. Try again');
+			redirect('admin/adduser');
 			return;
 		}
  
@@ -190,15 +194,18 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 			
 			if ($this->form_validation->run() == FALSE) 
 			{
-				redirect('admin/adduserpermission?msg=Check all fields');
+				$this->session->set_flashdata('msg','Check all fields');
+				redirect('admin/adduserpermission');
 				return;
 			}
 			if ($this->admin_model->add_user_permission($input))
 			{ 
-				redirect('admin/adduserpermission?msg=User permission added');
+				$this->session->set_flashdata('msg','User permission added');
+				redirect('admin/adduserpermission');
 				return;
 			}
-			redirect('admin/adduserpermission?msg=Cant\'t add permission. Likely to be Already done before ');
+				$this->session->set_flashdata('msg','Cant\'t add permission. Likely to be Already done before');
+			redirect('admin/adduserpermission');
 			return ;			 
 		}
  
@@ -253,7 +260,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 			
 			if ($this->form_validation->run() == FALSE) 
 			{
-				redirect('admin/deleteuserpermission?msg=Check all fields');
+				$this->session->set_flashdata('msg','Check all fields');
+				redirect('admin/deleteuserpermission');
 				return;
 			}
  
@@ -264,12 +272,17 @@ defined('BASEPATH') OR exit('No direct script access allowed');
  
 			if($this->admin_model->delete_user_permission($userdata))
 			{
-				redirect('admin/deleteuserpermission?msg=User permission revoked');
+				$this->session->set_flashdata('msg','User permission revoked');
+				if($input['uid'] == $this->session_data['uid'])
+				{
+					redirect('accounts/logout');				
+				}
+				redirect('admin/deleteuserpermission');
 				return;
 			}
 			else{
-				
-				redirect('admin/deleteuserpermission?msg=can\'t revoked User permission.Try again');
+				$this->session->set_flashdata('msg','Can\'t revoke user permission. Try again');
+				redirect('admin/deleteuserpermission');
 				return;
 			}  
 		}
@@ -382,7 +395,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 			// run the form validation
 			if ($this->form_validation->run() == FALSE) 
 			{
-				redirect('admin/resetpassword?msg=Check all fields'); 
+				$this->session->set_flashdata('msg','Check all fields');
+				redirect('admin/resetpassword'); 
 				return;
 			}
 
@@ -391,16 +405,19 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 			// Also delete history to automatically logout from other deveices
 			if ($this->admin_model->reset_password($input['username'],$input['password'])) 
 			{
-				redirect('admin/manageusers?msg=Password has been changed for user '.$inputs['username']);
+				$this->session->set_flashdata('msg','Password has chenged.');
+				redirect('admin/manageusers');
 				return;
 			}
 			else
 			{
-				redirect('admin/manageusers?msg=Couldn\'t change password');
+				$this->session->set_flashdata('msg','Couldn\'t change password');
+				redirect('admin/manageusers');
 				return;
 			}
 		}
-		redirect('admin/manageusers?msg=Missing parameters. Try again.');
+		$this->session->set_flashdata('msg','Missing fields. Try again');
+		redirect('admin/manageusers');
 	}
 
  
@@ -424,7 +441,9 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 			if ($this->form_validation->run() == FALSE) 
 			{
-				redirect('admin/manageusers?msg=username not valid'); 
+
+				$this->session->set_flashdata('msg','Username not valid');
+				redirect('admin/manageusers'); 
 				return;
 			}
 
@@ -432,17 +451,21 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 			
 			if(strtolower($this->input->post('type_yes') )!= 'yes')
 			{
-				redirect('admin/deleteuser?email=' .  $email .  '&msg=Confirm deleted'); 
+
+				$this->session->set_flashdata('msg','Confirm Delete');
+				redirect('admin/deleteuser?email=' .  $email .  ''); 
 				return;
 			}
  
 			if ($this->admin_model->delete_user($email)) 
 			{
-				redirect('admin/manageusers?msg=user  account ( ' . $email . ' ) deleted'); 
+				$this->session->set_flashdata('msg','User account deleted');
+				redirect('admin/manageusers'); 
 				return;
 			}
 
-			redirect('admin/manageusers?msg=Cant delete user.Try again'); 
+			$this->session->set_flashdata('msg','Cant delete user. Try again');
+			redirect('admin/manageusers'); 
 			return;
 		}
 		else if($email = $this->input->get('email'))
@@ -458,7 +481,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 			return;
 		}
 
-		redirect('admin/manageusers?msg=username required'); 
+		$this->session->set_flashdata('msg','Username required');
+		redirect('admin/manageusers'); 
 		return;
 	}
 
@@ -483,18 +507,21 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 			if ($this->form_validation->run() == FALSE) 
 			{
-				redirect('admin/manageusers?msg=username not valid'); 
+				$this->session->set_flashdata('msg','Username not valid');
+				redirect('admin/manageusers'); 
 				return;
 			}
 
 			// parameter are 'values' and 'where' inquery 
-			if ($this->admin_model->update_user_details(['email' => $email], ['email' => $oldemail])) {
-				redirect('admin/manageusers?msg=user details updated');
-				
+			if ($this->admin_model->update_user_details(['email' => $email], ['email' => $oldemail])) 
+			{
+
+				$this->session->set_flashdata('msg','User details updated');
+				redirect('admin/manageusers');
 				return;
 			}
-			redirect('admin/manageusers?msg=can\'t  update user details');
-			
+			$this->session->set_flashdata('msg','cant update user details');
+			redirect('admin/manageusers');
 			return;
 		}
 		 elseif ($email = $this->input->get('email')) 
@@ -513,8 +540,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 			
 			return;
 		}
-		redirect('admin/manageusers?msg=user not found');
-		
+		$this->session->set_flashdata('msg','User not found');
+		redirect('admin/manageusers');
 		return;
 	}
 	

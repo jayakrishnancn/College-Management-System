@@ -199,6 +199,6 @@ class common_functions {
 
 		// if user and cookie verified continue 
 		$this->verify_user_and_cookie(NULL,$redirect_invalid);
-	}
+	} 
   
 }

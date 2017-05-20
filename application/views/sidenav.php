@@ -27,6 +27,7 @@
 		<a class="list-group-item" href="<?=base_url()?>principal/view_departments">View Department</a>  
 		<a class="list-group-item" href="<?=base_url()?>principal/change_hod">Change Department HOD</a>  
 		<a class="list-group-item" href="<?=base_url()?>principal/add_staff">Add Staff</a>  
+		<a class="list-group-item" href="<?=base_url()?>principal/view_staff">View Staff</a>  
 	</ul>
 <?php 
 	}

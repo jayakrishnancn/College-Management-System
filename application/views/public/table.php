@@ -7,7 +7,8 @@
 </h3>
 
 <hr> 
-<?php if (count($table) > 0): ?>
+<?php 
+if(isset($table) && count($table) > 0): ?>
 <table class="table table-bordered tabletosearch">
   <thead>
     <tr>

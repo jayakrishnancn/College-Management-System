@@ -3,27 +3,17 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Accounts_model extends MY_Model {
  
-	function __construct() {
-		parent::__construct();
-		$this->load->database();
-	}
-	private function random($length = 10) {
-		
-		return substr(str_shuffle(str_repeat($x = '0123456789abcdefghijkl_mnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_', ceil($length / strlen($x)))) , 1, $length);
-	}
-	private function _hash_password($data, $salt = NULL) {
-		if ($salt == NULL) {
-			$salt = $this->random(12);
-		}
-		
-		return [sha1($salt . $data) , $salt];
-	}
+	function __construct() 
+	{
+		parent::__construct(); 
+	} 
+
 	public function login($data) {
 		$q = $this->db->get_where($this->tables['login'], ['email' => $data['username']]);
 		if ($q->num_rows() == 1) {
 			$salt = $q->result_array() [0]['salt'];
 			$hashed_password = $this->_hash_password($data['password'], $salt) [0];
-   
+    
 			$q2 = $this->db->get_where($this->tables['login'], ['email' => $data['username'], 'password' => $hashed_password]);
 			if ($q2->num_rows() == 1) {
 				$this->load->library('user_agent');
@@ -31,7 +21,7 @@ class Accounts_model extends MY_Model {
 				$browser = $this->agent->browser();
 				$ip = $this->input->ip_address();
 				$platform = $this->agent->platform();
-				$cookie_id = $this->random(12);
+				$cookie_id = $this->_random(12);
 				$this->db->insert($this->tables['history'], ['uid' => $result2['uid'], 'browser' => $browser, 'ip' => $ip, 'os' => $platform, 'cookieid' => $cookie_id, 'dateandtime' => date("Y-m-d h:i:sa") ]);
 
 

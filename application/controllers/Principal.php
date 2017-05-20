@@ -444,4 +444,16 @@ class Principal extends MY_Controller {
 		$this->form_builder->setbutton('Add Staff');
 		$this->_render_principal_view('public/form_builder',false,false);
 	}
+
+	//---------------------------------------------------------------------
+	
+	/**
+	 * View Staff
+	 * 
+	 */
+	public function view_staff()
+	{
+		$data['table'] = $this->teacher_model->get_users($this->session_data['uid'],'principal');
+		$this->_render_view('public/table',$data);
+	}
 }

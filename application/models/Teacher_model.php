@@ -407,4 +407,9 @@ class Teacher_model extends MY_Model {
 		$this->db->trans_complete();
 		return $this->db->trans_status();
 	}
+	public function get_users($uid,$grp_name = 'admin')
+	{
+		$sql = "select uid,email,name from login where uid in (select uid from userpermission where permissionid in( select permissionid from permission where prio > (select prio from permission  where groupname = '$grp_name') ) and uid not in ($uid) )";
+		return $this->db->query($sql)->result_array();
+	}
 }

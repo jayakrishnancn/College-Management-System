@@ -140,4 +140,56 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 		$this->_render_hod_view('public/table',$data,false);
 	}
 	
+
+	//---------------------------------------------------------------------
+
+	/**
+	 * Add Staff
+	 * 
+	 *  @return void
+	 */
+	public function add_staff()
+	{
+		if($input = $this->input->post())
+		{
+
+			// validate the username and password
+			$this->load->library('form_validation');
+			
+			// username and password : Required and check for min_length
+			$this->form_validation->set_rules('email', 'E-mail', 'trim|required|min_length[4]|valid_email');
+			 
+			$this->form_validation->set_rules('username', 'username', 'trim|required|min_length[4]'); 
+
+			// if the requirement are not meet redirect to signup page to re-enter the signup details 
+			if ($this->form_validation->run() == FALSE)
+			{ 
+				$this->session->set_flashdata('msg','Insufficient inputs. Try again.');
+				redirect($this->current_url);
+				return;
+			}
+			$input['department']=$this->teacher_model->get_my_department($this->session_data['uid'])['department_name'];
+		
+		
+			if($this->teacher_model->add_new_user($input))
+			{
+				$this->session->set_flashdata('msg','New user added.');
+				redirect($this->current_url);
+				return FALSE;
+			}
+			$this->session->set_flashdata('msg','user not added. Try again.');
+			redirect($this->current_url);
+			return FALSE;
+		}
+		$this->load->library('form_builder');
+		$this->form_builder->start_form(['heading' => 'Add  Staff']);
+	
+		$this->form_builder->addlabel('Name');
+		$this->form_builder->addinput('username');
+		$this->form_builder->addlabel('E-mail');
+		$this->form_builder->addinput('email'); 
+		$this->form_builder->setbutton('Add Staff');
+		$this->_render_hod_view('public/form_builder',false,false);
+	}
+
 }

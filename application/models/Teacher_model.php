@@ -245,6 +245,27 @@ class Teacher_model extends MY_Model {
 
 	// --------------------------------------------------------------------
 	
+
+	// --------------------------------------------------------------------
+	
+
+	public function get_my_department($uid)
+	{
+		$q = $this->db->get_where('staff',['uid'=>$uid]);
+		if($q->num_rows()!=1)
+		{
+			return FALSE;
+		} 
+
+		$dept_id = $q->result_array()[0]['department_id'];
+		$q2 = $this->db->get_where('department',['id'=>$dept_id]);
+		if($q2->num_rows()!=1)
+		{
+			return FALSE;
+		}
+		return $q2->result_array()[0];
+
+	}
 	/**
 	 * Delete Department Details 
 	 *
@@ -387,7 +408,7 @@ class Teacher_model extends MY_Model {
 		{
 			return FALSE;
 		}
-		$pass = $this->_hashPassword($data['email']);
+		$pass = $this->_hash_password($data['email']);
 		$values = array(
 			'email' => $data['email'] ,
 			'name' => $data['username'],
@@ -403,7 +424,11 @@ class Teacher_model extends MY_Model {
 		}
 		$this->db->trans_start();
 			$this->db->insert('login',$values);
-			$this->db->insert('userpermission',['uid' =>$this->db->insert_id(), 'permissionid' => $this->get_permission('teacher')['permissionid'] ]);
+			$new_uid = $this->db->insert_id();
+			$this->db->insert('userpermission',['uid' =>$new_uid, 'permissionid' => $this->get_permission('teacher')['permissionid'] ]);
+			$user_dept_id = $this->get_department(['department_name' => $data['department']],'id')[0]['id'];
+
+			$this->db->insert('staff',['uid'=> $new_uid,'department_id' =>$user_dept_id]);
 		$this->db->trans_complete();
 		return $this->db->trans_status();
 	}
